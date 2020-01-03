@@ -1,5 +1,44 @@
+$font: 'Muli', sans-serif;
+$breakpoint: 992px;
+
 html, body {
     width: 100% !important;
     height: 100% !important;
     margin: 0;
+    font-family: $font; 
+    font-weight: 200;
+    scroll-behavior: smooth;
+    font-size: 1em;
+    padding: 0;
+}
+
+.inc-font {
+    font-size: 1.2em;
+}
+.light-font {
+    font-weight: 300;
+}
+
+.default-font {
+    font-family: sans-serif;
+    font-weight: 600;
+}
+.bubble-font {
+    font-family: 'Staatliches', $font !important;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 300;
+}
+
+@media (max-width: $breakpoint){
+    .h1{
+        font-size: 1.5rem;
+    }
+    .h2{
+        font-size: 1.25rem;
+    }
+    .h3{
+        font-size: 1rem;
+    }
 }

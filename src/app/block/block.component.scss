@@ -1,0 +1,8 @@
+@import '../../styles.scss';
+
+.game-mode-btn{
+    @extend .inc-font;
+    @extend .light-font;
+    width: 140px !important;
+    height: 50px !important;
+}

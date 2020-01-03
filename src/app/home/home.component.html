@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="bubble-font text-center h1 mt-4 scaling-font">
+    JS Games Leaderboards
+  </div>
+  <div class="my-4 row">
+    <div class="col-12 col-lg-6 mb-3" *ngFor="let game of games">
+      <div class="border bg-light rounded">
+        <div class="text-center h3 p-3">
+          {{ game.name }}
+        </div>
+
+        <table *ngIf="getDictionaryLength(game.highScores); else no_high_scores" class="table border-bottom">
+          <tbody>
+            <tr *ngFor="let score of game.highScores | keyvalue">
+              <td style="width: 10%;">{{ score.key }}.</td>
+              <td><strong>{{ score.value }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #no_high_scores class="px-3">
+          <div class="w-100 text-center">
+            No high scores!
+          </div>
+        </ng-template>
+
+        <div class="text-center mb-3 mt-4">
+          <a routerLink="{{ game.route }}"><button class="btn btn-primary bubble-font inc-font px-3">Play &nbsp; <i class="fa fa-chevron-circle-right"></i></button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
