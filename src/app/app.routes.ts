@@ -7,6 +7,7 @@ import { MatchingComponent } from './matching/matching.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
+    { path: 'home', component: HomeComponent },
     { path: 'block', component: BlockComponent },
     { path: 'matching', component: MatchingComponent },
     { path: 'settings', component: SettingsComponent },

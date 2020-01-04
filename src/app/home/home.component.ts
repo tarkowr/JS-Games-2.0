@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Game } from '../models/Game';
+import { LocalStorage } from '../services/local-storage';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +8,12 @@ import { Game } from '../models/Game';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  games: Array<Game>;
+  games: Game[];
+  localStorage: LocalStorage;
 
-  constructor() { }
+  constructor() { 
+    this.localStorage = new LocalStorage();
+  }
 
   getDictionaryLength(dict) {
     return Object.keys(dict).length;
@@ -19,30 +23,35 @@ export class HomeComponent implements OnInit {
     this.games = [
       {
         name: 'Block (Easy)',
-        highScores: {},
+        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockEasy),
         route: '/block'
       },
       {
         name: 'Block (Hard)',
-        highScores: {},
+        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockHard),
         route: '/block'
       },
       {
         name: 'Block (Impossible)',
-        highScores: {},
+        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockImpossible),
         route: '/block'
       },
       {
         name: 'Block (Flappy)',
-        highScores: {},
+        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockFlappy),
         route: '/block'
       },
       {
         name: 'Matching',
-        highScores: {},
+        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.Matching),
         route: '/matching'
       }
     ];
-  }
 
+    this.games.forEach(function(game:Game) {
+      if (game.highScores[0] === 0){
+        game.highScores = [];
+      }
+    });
+  }
 }

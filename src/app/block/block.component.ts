@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LocalStorage } from '../services/local-storage';
 
 @Component({
   selector: 'app-block',
@@ -46,7 +47,11 @@ export class BlockComponent implements OnInit {
   updateGameMethod: any;
   createGameAreaMethod: any;
 
-  constructor() { }
+  localStorage: LocalStorage;
+
+  constructor() {
+    this.localStorage = new LocalStorage();
+  }
 
   //
   // Setup game variables and high score
@@ -168,6 +173,7 @@ export class BlockComponent implements OnInit {
   //
   restartGame() {
     this.myGameArea.clear();
+
     for (const member in this.myGamePiece) {
       if (member) {
         delete this.myGamePiece[member];
@@ -344,7 +350,7 @@ export class BlockComponent implements OnInit {
             // Set new high score
             //
             if (window.localStorage) {
-                // CheckForNewHighScore(this.gameMode, this.scoreValue);
+                this.localStorage.InsertScoreByName(this.gameMode, this.scoreValue, this.localStorage.scoreType.HIGH);
             }
 
             return;
@@ -419,7 +425,7 @@ export class BlockComponent implements OnInit {
     // Display High Score and current score
     //
     if (window.localStorage) {
-      this.HS.text = 'HIGH SCORE: ' + ''; // GetScoreByName(gameMode);
+      this.HS.text = 'HIGH SCORE: ' + this.localStorage.GetScoreByName(this.gameMode)[0];
       this.HS.update();
     }
 

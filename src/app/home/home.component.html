@@ -3,17 +3,17 @@
     JS Games Leaderboards
   </div>
   <div class="my-4 row">
-    <div class="col-12 col-lg-6 mb-3" *ngFor="let game of games">
+    <div class="col-12 col-md-6 col-lg-4 mb-3" *ngFor="let game of games">
       <div class="border bg-light rounded">
         <div class="text-center h3 p-3">
           {{ game.name }}
         </div>
 
-        <table *ngIf="getDictionaryLength(game.highScores); else no_high_scores" class="table border-bottom">
+        <table *ngIf="getDictionaryLength(game.highScores); else no_high_scores" class="table table-hover border-bottom">
           <tbody>
-            <tr *ngFor="let score of game.highScores | keyvalue">
-              <td style="width: 10%;">{{ score.key }}.</td>
-              <td><strong>{{ score.value }}</strong></td>
+            <tr *ngFor="let score of game.highScores; let i = index">
+              <td style="width: 10%;">{{ i + 1 }}.</td>
+              <td><strong>{{ score }}</strong></td>
             </tr>
           </tbody>
         </table>
