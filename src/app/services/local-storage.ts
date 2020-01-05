@@ -42,6 +42,10 @@ GetScoreByName(name) {
             break;
     }
 
+    if (scores === undefined || scores === null){
+        return [0];
+    }
+
     return JSON.parse(scores);
 }
 
