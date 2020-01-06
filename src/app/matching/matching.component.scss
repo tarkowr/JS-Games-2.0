@@ -1,0 +1,69 @@
+@import '../../styles.scss';
+
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 350px;
+}
+.deck{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+.deck .boardCard{
+    min-width: 50px;
+    height: 90px;
+    flex: 1;
+    padding: 18px 6px;
+    background-color: #161616;
+    color: #161616;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 40px;
+}
+.deck .boardCard.open{
+    cursor: default;
+}
+.deck .boardCard.show{
+    color: white;
+}
+.deck .boardCard.match{
+    cursor: default;
+    color: #6AA2FE;
+}
+.deck .boardCard.unmatched{
+    color: #f44242;
+}
+.deck .boardCard.disabled{
+    pointer-events: none;
+}
+#settings{
+    width: 350px;
+    font-size: 24px;
+}
+.restart {
+    width: 350px;
+}
+.moves, #cards-left{
+    color: red;
+}
+#modal{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.6);
+}
+#box{
+    width: 80%;
+    position: fixed;
+    top: 30%;
+    margin-left: 10%;
+}

@@ -226,7 +226,6 @@ export class BlockComponent implements OnInit {
       start() {
           this.canvas.width = gameContext.CanvasWidth;
           this.canvas.height = gameContext.CanvasHeight;
-          this.canvas.classList.add('bg-light', 'border');
 
           this.context = this.canvas.getContext('2d');
           this.canvas.classList.remove('d-none');

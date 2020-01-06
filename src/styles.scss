@@ -18,6 +18,9 @@ html, body {
 .light-font {
     font-weight: 300;
 }
+.lighter-font {
+    font-weight: 200 !important;
+}
 
 .default-font {
     font-family: sans-serif;
@@ -39,6 +42,9 @@ html, body {
         font-size: 1.25rem;
     }
     .h3{
+        font-size: 1.1rem;
+    }
+    .h4{
         font-size: 1rem;
     }
 }

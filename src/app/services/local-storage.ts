@@ -55,6 +55,10 @@ GetScoreByName(name) {
 InsertScoreByName(name, value, type) {
     let currentScores: Array<number> = this.GetScoreByName(name);
 
+    if (currentScores.length === 1 && currentScores[0] === 0){
+        currentScores.pop();
+    }
+
     currentScores.push(parseInt(value));
     currentScores.sort((a, b) => b - a);
 

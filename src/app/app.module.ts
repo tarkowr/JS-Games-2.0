@@ -19,7 +19,7 @@ import { SettingsComponent } from './settings/settings.component';
     BlockComponent,
     MatchingComponent,
     SettingsComponent
-  ],
+ ],
   imports: [
     BrowserModule,
     AppRoutingModule
