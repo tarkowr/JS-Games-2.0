@@ -1,3 +1,36 @@
-<div class="text-center mt-3">
-  Settings coming soon!
+<div class="container text-center mt-3">
+  <form class="border bg-white rounded p-3 text-left" [formGroup]="resetForm" (ngSubmit)="onSubmit()">
+      <p class="form-header w-100 text-center">Reset High Score(s)</p>
+
+      <p class="inc-font">Block</p>
+      <div class="form-check form-check-inline ml-3">
+        <input class="form-check-input" type="checkbox" id="block-easy" value="block-easy" formControlName="blockEasy">
+        <label class="form-check-label" for="block-easy">Easy</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="block-hard" value="block-hard" formControlName="blockHard">
+        <label class="form-check-label" for="block-hard">Hard</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="block-impossible" value="block-impossible" formControlName="blockImpossible">
+        <label class="form-check-label" for="block-impossible">Impossible</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="block-flappy" value="block-flappy" formControlName="blockFlappy">
+        <label class="form-check-label" for="block-flappy">Flappy</label>
+      </div>
+
+      <hr class="my-2"/>
+
+      <p class="inc-font">Matching</p>
+      <div class="form-check form-check-inline ml-3">
+        <input class="form-check-input" type="checkbox" id="matching-original" value="matching-original" formControlName="matchingOriginal">
+        <label class="form-check-label" for="matching-original">Original</label>
+      </div>
+
+      <br/>
+
+      <button class="btn btn-primary mt-4 px-5 py-2">Submit</button>
+      <div class="text-danger small text-uppercase pt-1">This will reset all of your high scores for the selected games.</div>
+  </form>
 </div>

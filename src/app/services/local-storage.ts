@@ -15,88 +15,88 @@ export class LocalStorage {
         this.scoreArraySize = 5;
     }
 
-//
-// Return a high score by name
-//
-GetScoreByName(name) {
-    let scores;
+    //
+    // Return a high score by name
+    //
+    GetScoreByName(name) {
+        let scores;
 
-    switch (name) {
-        case this.scores.BlockEasy:
-            scores = localStorage.blockEasy;
-            break;
-        case this.scores.BlockHard:
-            scores = localStorage.blockHard;
-            break;
-        case this.scores.BlockImpossible:
-            scores = localStorage.blockImpossible;
-            break;
-        case this.scores.BlockFlappy:
-            scores = localStorage.blockFlappy;
-            break;
-        case this.scores.Matching:
-            scores = localStorage.Matching;
-            break;
-        default:
-            scores = 0;
-            break;
+        switch (name) {
+            case this.scores.BlockEasy:
+                scores = localStorage.blockEasy;
+                break;
+            case this.scores.BlockHard:
+                scores = localStorage.blockHard;
+                break;
+            case this.scores.BlockImpossible:
+                scores = localStorage.blockImpossible;
+                break;
+            case this.scores.BlockFlappy:
+                scores = localStorage.blockFlappy;
+                break;
+            case this.scores.Matching:
+                scores = localStorage.Matching;
+                break;
+            default:
+                scores = [0];
+                break;
+        }
+
+        if (scores === undefined || scores === null){
+            return [0];
+        }
+
+        return JSON.parse(scores);
     }
 
-    if (scores === undefined || scores === null){
-        return [0];
+    //
+    // Set a new high score by name
+    //
+    InsertScoreByName(name, value, type) {
+        let currentScores: Array<number> = this.GetScoreByName(name);
+
+        if (currentScores.length === 1 && currentScores[0] === 0){
+            currentScores.pop();
+        }
+
+        currentScores.push(parseInt(value));
+        currentScores.sort((a, b) => b - a);
+
+        if (type === this.scoreType.LOW) {
+            currentScores.reverse();
+        }
+
+        while (currentScores.length > this.scoreArraySize){
+            currentScores.pop();
+        }
+
+        this.SetScoreByName(name, JSON.stringify(currentScores));
     }
 
-    return JSON.parse(scores);
-}
-
-//
-// Set a new high score by name
-//
-InsertScoreByName(name, value, type) {
-    let currentScores: Array<number> = this.GetScoreByName(name);
-
-    if (currentScores.length === 1 && currentScores[0] === 0){
-        currentScores.pop();
+    //
+    // Set a new high score by name
+    //
+    SetScoreByName(name, value) {
+        switch (name) {
+            case this.scores.BlockEasy:
+                localStorage.blockEasy = value;
+                break;
+            case this.scores.BlockHard:
+                localStorage.blockHard = value;
+                break;
+            case this.scores.BlockImpossible:
+                localStorage.blockImpossible = value;
+                break;
+            case this.scores.BlockFlappy:
+                localStorage.blockFlappy = value;
+                break;
+            case this.scores.Matching:
+                localStorage.Matching = value;
+                break;
+            default:
+                break;
+        }
     }
-
-    currentScores.push(parseInt(value));
-    currentScores.sort((a, b) => b - a);
-
-    if (type === this.scoreType.LOW) {
-        currentScores.reverse();
-    }
-
-    while (currentScores.length > this.scoreArraySize){
-        currentScores.pop();
-    }
-
-    this.SetScoreByName(name, JSON.stringify(currentScores));
-}
-
-//
-// Set a new high score by name
-//
-SetScoreByName(name, value) {
-    switch (name) {
-        case this.scores.BlockEasy:
-            localStorage.blockEasy = value;
-            break;
-        case this.scores.BlockHard:
-            localStorage.blockHard = value;
-            break;
-        case this.scores.BlockImpossible:
-            localStorage.blockImpossible = value;
-            break;
-        case this.scores.BlockFlappy:
-            localStorage.blockFlappy = value;
-            break;
-        case this.scores.Matching:
-            localStorage.Matching = value;
-            break;
-        default:
-            break;
-    }
-}
 
     //
     // Set all null or undefined this.scores to zero

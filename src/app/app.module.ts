@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +10,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { BlockComponent } from './block/block.component';
 import { MatchingComponent } from './matching/matching.component';
 import { SettingsComponent } from './settings/settings.component';
+
+import { UserSettingsService } from './services/user-settings';
 
 @NgModule({
   declarations: [
@@ -22,9 +25,10 @@ import { SettingsComponent } from './settings/settings.component';
  ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [UserSettingsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
