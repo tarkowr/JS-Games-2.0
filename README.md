@@ -23,4 +23,5 @@ Play a memory matching game on a 5x4 board with 10 pairs of cards.
 * Bootstrap styling
 * Converting Javascript to TypeScript
 * Converting CSS to SCSS
+* HTML5 Local Storage
 * Hosting a site on [Google Firebase](https://firebase.google.com/)
