@@ -15,9 +15,9 @@
             </div>
         </div>
     
-        <div *ngIf="gameEnd">
-            <button id="exit" class="btn btn-primary mx-2 mt-4 game-mode-btn" (click)="reloadPage()">Exit</button>
-            <button id="restart" class="btn btn-outline-primary mx-2 mt-4 game-mode-btn" (click)="restartGame()">Restart</button>
+        <div *ngIf="gameEnd" class="my-4">
+            <button id="exit" class="btn btn-primary mx-2 game-mode-btn" (click)="reloadPage()">Exit</button>
+            <button id="restart" class="btn btn-outline-primary mx-2 game-mode-btn" (click)="restartGame()">Restart</button>
         </div>
     </div>
 </div>

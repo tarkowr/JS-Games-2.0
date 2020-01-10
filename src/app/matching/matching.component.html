@@ -1,18 +1,18 @@
 <div class="text-center mt-4">
-  <main id="game" class="bg-white border m-auto">
+  <main id="game" class="bg-white border m-auto rounded">
     <ul id="card-deck" class="deck p-1 w-100 mb-0"  *ngIf="cardNames">
-        <li class="boardCard match m-1" *ngFor="let card of cardNames" type="{{card}}" (click)="HandleCardClick($event)">
+        <li class="boardCard match m-1 rounded" *ngFor="let card of cardNames" type="{{card}}" (click)="HandleCardClick($event)">
           <i class="fa fa-{{card}}"></i>
         </li>
     </ul>
   </main>
 
-  <section id="settings" class="text-center bg-white border p-2 mt-2 mx-auto">
+  <section id="settings" class="text-center bg-white border p-2 mt-2 mx-auto rounded">
     <span class="moves" *ngIf="moves !== undefined">{{ moves }}</span> Move(s) <br>
     <span id="cards-left" *ngIf="cardsRemaining !== undefined">{{ cardsRemaining }}</span> Cards Remaining 
   </section>
 
-  <div class="restart text-center mx-auto mt-2">
+  <div class="restart text-center mx-auto my-2">
     <button class="btn btn-primary w-100 py-3 text-uppercase" (click)="OnRestart()">Restart</button>
   </div>
 

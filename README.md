@@ -1,13 +1,26 @@
-# JsGames
+# JS Games
 
-## Development server
+JS Games is an Angular 8 web app that features several simple JavaScript games.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+[Visit JS Games!](https://js-gms.firebaseapp.com/)
 
-## Code scaffolding
+## Block
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Navigate a block between the approaching obstacles in four different game modes:
 
-## Build
+1. Easy
+2. Hard
+3. Impossible
+4. Flappy
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Matching
+
+Play a memory matching game on a 5x4 board with 10 pairs of cards.
+
+## What I Learned
+
+* Angular 8 web development (templates, components, routing, npm libraries etc.)
+* Bootstrap styling
+* Converting Javascript to TypeScript
+* Converting CSS to SCSS
+* Hosting a site on [Google Firebase](https://firebase.google.com/)
