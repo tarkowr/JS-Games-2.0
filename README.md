@@ -20,7 +20,7 @@ Play a memory matching game on a 5x4 board with 10 pairs of cards.
 ## What I Learned
 
 * Angular 8 web development (templates, components, routing, npm libraries etc.)
-* Bootstrap styling
+* Styling with Bootstrap
 * Converting Javascript to TypeScript
 * Converting CSS to SCSS
 * HTML5 Local Storage
