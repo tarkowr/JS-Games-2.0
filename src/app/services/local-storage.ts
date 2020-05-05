@@ -130,4 +130,12 @@ export class LocalStorage {
     IsLowScore(playerHighScore, playerScore) {
         return playerHighScore > playerScore;
     }
+
+    SetUser(id) {
+        localStorage.setItem('user_id', id);
+    }
+
+    GetUser() {
+        return localStorage.getItem('user_id')
+    }
 }

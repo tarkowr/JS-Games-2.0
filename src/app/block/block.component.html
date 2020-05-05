@@ -6,7 +6,7 @@
     <div class="text-center pt-3">
     
         <div *ngIf="!playing" class="mt-3">
-            <div class="text-danger text-center inc-font">Please Select a Game Mode</div>
+            <div class="text-danger text-center inc-font prompt">Please Select a Game Mode</div>
             <div class="my-4">
                 <button id="startGameEasy" class="btn btn-primary mx-2 mt-3 game-mode-btn" (click)="SetupGame(GameModes.BlockEasy)">Easy</button>
                 <button id="startGameHard" class="btn btn-primary mx-2 mt-3 game-mode-btn" (click)="SetupGame(GameModes.BlockHard)">Hard</button>

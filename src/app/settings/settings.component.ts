@@ -12,8 +12,7 @@ export class SettingsComponent implements OnInit {
   formBuilder: FormBuilder;
   loading = false;
 
-  constructor(
-    private settings: UserSettingsService) { }
+  constructor(private settings: UserSettingsService) { }
 
   ngOnInit() {
     this.formBuilder = new FormBuilder();
