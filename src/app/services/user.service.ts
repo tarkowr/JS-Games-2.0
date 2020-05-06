@@ -15,4 +15,8 @@ export class UserService {
     get(id: String){
         return this.http.post(`${environment.apiUrl}/user/get`, { id: id }).toPromise()
     }
+
+    getAll(){
+        return this.http.get(`${environment.apiUrl}/user/get/all`).toPromise()
+    }
 }

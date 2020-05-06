@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Game } from '../models/Game';
 import { LocalStorage } from '../services/local-storage';
 import { UserService } from '../services/user.service';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-home',
@@ -16,12 +17,14 @@ export class HomeComponent implements OnInit {
   submitted: Boolean = false;
   loading: Boolean = false;
   user: any;
+  users: any;
   showForm: Boolean = false;
   pageLoaded: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService) { 
+    private userService: UserService,
+    private gameService: GameService) { 
     this.localStorage = new LocalStorage();
   }
 
@@ -40,42 +43,64 @@ export class HomeComponent implements OnInit {
     return this.userService.get(id);
   }
 
-  hideEmptyScores(){
-    this.games.forEach(function(game:Game) {
-      if (game.highScores[0] === 0){
-        game.highScores = [];
+  // Get username by ID
+  lookupUsername(id: Number) {
+    let username = '';
+
+    this.users.forEach(u => {
+      if (u.id == id) {
+        username = u.username;
       }
-    });
+    })
+
+    return username;
   }
 
-  fetchGameScores() {
+  // Retrieve high scores from firebase
+  async fetchGameScores() {
+    this.users = await this.userService.getAll()
+
+    let matchingScores = await this.gameService.getMatching()
+      .catch(() => {
+        return null
+      })
+
     this.games = [
       {
+        name: 'Matching',
+        highScores: matchingScores,
+        route: '/matching'
+      },
+      {
         name: 'Block (Easy)',
-        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockEasy),
+        highScores: null,
         route: '/block'
       },
       {
         name: 'Block (Hard)',
-        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockHard),
+        highScores: null,
         route: '/block'
       },
       {
         name: 'Block (Impossible)',
-        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockImpossible),
+        highScores: null,
         route: '/block'
       },
       {
         name: 'Block (Flappy)',
-        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.BlockFlappy),
+        highScores: null,
         route: '/block'
       },
-      {
-        name: 'Matching',
-        highScores: this.localStorage.GetScoreByName(this.localStorage.scores.Matching),
-        route: '/matching'
-      }
     ];
+  }
+
+  // Initialize the create user form
+  buildUserForm() {
+    this.createForm = this.formBuilder.group({
+      username: ['',  Validators.compose([
+        Validators.required, Validators.pattern(/^[a-zA-Z0-9]{1,12}$/)
+      ])]
+    })
   }
 
   // On user create form submission
@@ -103,15 +128,8 @@ export class HomeComponent implements OnInit {
   }
 
   async ngOnInit() {
-
-    this.createForm = this.formBuilder.group({
-      username: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9]{1,12}$/)
-      ])]
-    })
-
+    this.buildUserForm();
     this.fetchGameScores();
-    this.hideEmptyScores();
 
     this.user = await this.retrieveUser()
     this.pageLoaded = true;

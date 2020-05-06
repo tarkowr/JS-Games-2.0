@@ -42,11 +42,11 @@
           {{ game.name }}
         </div>
 
-        <table *ngIf="getDictionaryLength(game.highScores); else no_high_scores" class="table table-hover border-bottom">
+        <table *ngIf="game.highScores; else no_high_scores" class="table table-hover border-bottom">
           <tbody>
             <tr *ngFor="let score of game.highScores; let i = index">
               <td style="width: 10%;">{{ i + 1 }}.</td>
-              <td><strong>{{ score }}</strong></td>
+              <td *ngIf="score.userId"><strong>{{ score.score }} - {{ this.lookupUsername(score.userId) }}</strong></td>
             </tr>
           </tbody>
         </table>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorage } from '../services/local-storage';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-matching',
@@ -22,7 +23,7 @@ export class MatchingComponent implements OnInit {
   complete: number;
   localStorage: LocalStorage;
 
-  constructor() { 
+  constructor(private gameService: GameService) { 
     this.localStorage = new LocalStorage();
   }
 
@@ -156,11 +157,14 @@ export class MatchingComponent implements OnInit {
   //
   // Player Wins
   //
-  GameWon() {
+  async GameWon() {
       if (this.matchedCard.length === this.complete) {
-        this.localStorage.InsertScoreByName(this.localStorage.scores.Matching, this.moves, this.localStorage.scoreType.LOW);
+        let id = this.localStorage.GetUser()
 
-        this.bestScore = this.localStorage.GetScoreByName(this.localStorage.scores.Matching)[0];
+        if (id) {
+          await this.gameService.matchingResults(id, this.moves)
+        }
+
         this.modal.style.display = 'block';
       }
   }
