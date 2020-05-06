@@ -1,6 +1,10 @@
 <div class="text-center m-0 mt-5">
     <div id="game-board">
-        <canvas id="board" class="d-none border bg-white" (click)="canvasClicked()"></canvas>
+        <canvas id="board" class="d-none border bg-white" (click)="canvasClicked($event)"></canvas>
+    </div>
+
+    <div *ngIf="playing && caption" class="not-selectable">
+        {{ caption }}
     </div>
 
     <div class="text-center pt-3">

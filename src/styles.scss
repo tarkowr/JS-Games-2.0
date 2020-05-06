@@ -12,6 +12,10 @@ html, body {
     padding: 0;
 }
 
+.not-selectable{
+    user-select: none;
+}
+
 .inc-font {
     font-size: 1.2em;
 }

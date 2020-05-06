@@ -21,13 +21,14 @@ export class BlockComponent implements OnInit {
   passedObstacles = [];
   gameMode: string;
   clicked: boolean;
+  clickerUpper: boolean;
   playing: boolean;
   gameEnd: boolean;
 
   barMaxHeight: number;
   barMinHeight: number;
-  barMaxGap: number;
-  barMinGap: number;
+  barGap: number;
+  barGapRange: number; //Larger number will create smaller spread
 
   updateGameInterval: number; // Milliseconds
   addObstacleInterval: number; // Milliseconds
@@ -37,7 +38,6 @@ export class BlockComponent implements OnInit {
   blockUpKey: number;
   blockDownKey: number;
 
-  spacePress: number;
   clickCanvas: number;
   gravity: number;
   gravitySpeed: number;
@@ -49,6 +49,10 @@ export class BlockComponent implements OnInit {
 
   localStorage: LocalStorage;
 
+  mobile: Boolean = false;
+  breakpoint = 992;
+  caption: string;
+
   constructor(private gameService: GameService) {
     this.localStorage = new LocalStorage();
   }
@@ -59,7 +63,17 @@ export class BlockComponent implements OnInit {
   SetupGame(mode) {
     this.gameMode = mode;
     this.GameSettings(mode);
+    this.SetCaption();
     this.startGame();
+  }
+
+  SetCaption() {
+    if (this.mobile || this.gameMode == this.GameModes.BlockFlappy) {
+      this.caption = 'Tap the screen the move the block';
+    }
+    else {
+      this.caption = 'Use the arrow keys to move the block'
+    }
   }
 
   //
@@ -85,82 +99,52 @@ export class BlockComponent implements OnInit {
   //
   // Settings For Game Difficulty Easy
   //
-  GameDifficultyEasy() {
-    this.barMaxGap = 140;
-    this.barMinGap = 140;
-    this.barMaxHeight = this.CanvasHeight - this.barMaxGap;
-    this.barMinHeight = 30;
-
-    this.updateGameInterval = 10; // Milliseconds
-    this.addObstacleInterval = 100; // Milliseconds
-
-    this.barMovementSpeed = -3;
-
-    this.blockUpKey = -3;
-    this.blockDownKey = 3;
-  }
+  GameDifficultyEasy() { }
 
   //
   // Settings for Game Difficulty Hard
   //
   GameDifficultyHard() {
-    this.barMaxGap = 110;
-    this.barMinGap = 110;
-    this.barMaxHeight = this.CanvasHeight - this.barMaxGap;
-    this.barMinHeight = 30;
+    this.barGap = 110;
 
-    this.updateGameInterval = 10; // Milliseconds
-    this.addObstacleInterval = 70; // Milliseconds
-
-    this.barMovementSpeed = -4;
-
-    this.blockUpKey = -4;
-    this.blockDownKey = 4;
+    if (!this.mobile) {
+      this.addObstacleInterval = 70; // Milliseconds
+      this.barMovementSpeed = -4;
+      this.blockUpKey = -4;
+      this.blockDownKey = 4;
+    }
   }
 
   //
   // Settings for Game Difficulty Impossible
   //
   GameDifficultyImpossible() {
-    this.barMaxGap = 100;
-    this.barMinGap = 100;
-    this.barMaxHeight = this.CanvasHeight - this.barMaxGap;
-    this.barMinHeight = 30;
+    this.barGap = 110;
 
-    this.updateGameInterval = 10; // Milliseconds
-    this.addObstacleInterval = 50; // Milliseconds
-
-    this.barMovementSpeed = -5;
-
-    this.blockUpKey = -5;
-    this.blockDownKey = 5;
+    if (!this.mobile) {
+      this.addObstacleInterval = 50; // Milliseconds
+      this.barMovementSpeed = -5;
+      this.blockUpKey = -5;
+      this.blockDownKey = 5;
+    }
+    else {
+      this.addObstacleInterval = 90;
+    }
   }
 
   //
   // Settings for Game Difficulty Flappy
   //
   GameDifficultyFlappy() {
-    this.barMaxGap = 160;
-    this.barMinGap = 160;
-    this.barMaxHeight = this.CanvasHeight - this.barMaxGap;
-    this.barMinHeight = 30;
-
-    this.updateGameInterval = 10; // Milliseconds
-    this.addObstacleInterval = 100; // Milliseconds
-
-    this.barMovementSpeed = -3;
-
-    this.spacePress = -6;
-    this.gravity = 0;
-    this.gravitySpeed = .08;
+    this.barGap = 160;
   }
 
   //
   // Execute to Start Game
   //
   startGame() {
-    this.myGamePiece = this.component(45, 45, '#f43030', 75, 180, ''); // Instantiate new Game Component -- 30,30
-    this.myScore = this.component('30px', 'Consolas', 'black', 500, 40, 'text');
+    this.myGamePiece = this.component(45, 45, '#f43030', 75, 180, 'piece'); // Instantiate new Game Component -- 30,30
+    this.myScore = this.component('30px', 'Consolas', 'black', this.CanvasWidth - 160, 40, 'text');
     this.playing = true;
     this.gameEnd = false;
 
@@ -185,6 +169,8 @@ export class BlockComponent implements OnInit {
     this.scoreValue = 0;
     this.gravity = 0;
 
+    this.setCanvasSize();
+    this.GameSettings(this.gameMode);
     this.startGame();
   }
 
@@ -330,12 +316,15 @@ export class BlockComponent implements OnInit {
   //
   updateGameArea() {
     let x;
-    let height;
+    let yUpper;
+    let yLower;
+    let heightUpper;
+    let heightLower;
+    let width;
     let gap;
     let minHeight;
     let maxHeight;
-    let minGap;
-    let maxGap;
+    let color;
 
     //
     // Check if Player Crashed
@@ -363,17 +352,22 @@ export class BlockComponent implements OnInit {
     //
     // Add a new Obstacle to the game on Interval
     //
-    if (this.myGameArea.frameNo === 1 || this.everyinterval(this.addObstacleInterval)) {
+    if (this.everyinterval(this.addObstacleInterval)) {
         x = this.myGameArea.canvas.width;
         minHeight = this.barMinHeight;
         maxHeight = this.barMaxHeight;
-        height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
-        minGap = this.barMinGap;
-        maxGap = this.barMaxGap;
-        gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+        gap = this.barGap;
+        heightUpper = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
+        heightLower = x - heightUpper - gap;
+        width = 20;
+        color = '#4286f4';
+        yUpper = 0;
+        yLower = heightUpper + gap;
 
-        this.myObstacles.push(this.component(20, height, '#4286f4', x, 0, ''));
-        this.myObstacles.push(this.component(20, x - height - gap, '#4286f4', x, height + gap, ''));
+        if (this.mobile) heightLower += Math.abs(x - heightUpper)
+
+        this.myObstacles.push(this.component(width, heightUpper, color, x, yUpper, 'obstacle')); // top
+        this.myObstacles.push(this.component(width, heightLower, color, x, yLower, 'obstacle')); // bottom
     }
 
     //
@@ -387,10 +381,15 @@ export class BlockComponent implements OnInit {
         //
         if (this.myGamePiece.x > this.myObstacles[i].x && !this.passedObstacles.includes(this.myObstacles[i])) {
           this.passedObstacles.push(this.myObstacles[i]);
-          this.scoreValue += .5; // Two bars are passed at the same time
+          this.scoreValue = this.passedObstacles.length / 2; // Two bars are passed at the same time
         }
 
         this.myObstacles[i].update();
+    }
+
+    // Remove older obstacles
+    if (this.myObstacles.length > 10) {
+      this.myObstacles.splice(0, 6);
     }
 
     this.myGamePiece.speedY = 0;
@@ -408,38 +407,69 @@ export class BlockComponent implements OnInit {
           this.gravity = this.gravity + ((this.gravity < 0) ? this.gravitySpeed * 1.5 : this.gravitySpeed); // Add to Gravity Pull Effect
         }
     } else {
-        if (this.myGameArea.key && this.myGameArea.key === this.GameKeys.UP) {
-          this.myGamePiece.speedY = this.blockUpKey;
-        } else if (this.myGameArea.key && this.myGameArea.key === this.GameKeys.DOWN) {
-          this.myGamePiece.speedY = this.blockDownKey;
+        if (!this.mobile) {
+          if (this.myGameArea.key && this.myGameArea.key === this.GameKeys.UP) {
+            this.myGamePiece.speedY = this.blockUpKey;
+          } else if (this.myGameArea.key && this.myGameArea.key === this.GameKeys.DOWN) {
+            this.myGamePiece.speedY = this.blockDownKey;
+          }
+        } 
+        else {
+          if (this.clicked) {
+            const yOffset = 40;
+
+            if (this.clickerUpper) {
+              this.myGamePiece.speedY = yOffset;
+            } else {
+              this.myGamePiece.speedY = -yOffset;
+            }
+
+            this.clicked = false;
+          }
         }
     }
 
     //
     // Display Current score
     //
-    this.myScore.text = 'SCORE: ' + this.scoreValue;
+    this.myScore.text = 'SCORE: ' + this.scoreValue; 
     this.myScore.update();
 
     this.myGamePiece.newPos(); // Update New Position
     this.myGamePiece.update(); // Update Game
   }
 
-  canvasClicked() {
+  //
+  // Handle canvas click
+  //
+  canvasClicked(e) {
+    if ((e.layerY / this.CanvasHeight) > 0.5) this.clickerUpper = true;
+    else this.clickerUpper = false;
+
     this.clicked = true;
   }
 
-  ngOnInit() {
-    this.GameModes = Object.freeze({
-      BlockEasy: 'easy',
-      BlockHard: 'hard',
-      BlockImpossible: 'impossible',
-      BlockFlappy: 'flappy'
-    });
-    this.GameKeys = Object.freeze({UP: 'ArrowUp', DOWN: 'ArrowDown', SPACE: ' '});
-    this.CanvasWidth = 720;
-    this.CanvasHeight = 405;
+  //
+  // Set the canvas size
+  //
+  setCanvasSize(){
+    if(window.innerWidth < this.breakpoint) this.mobile = true;
+    else this.mobile = false;
 
+    if (!this.mobile){
+      this.CanvasWidth = 720;
+    }
+    else {
+      this.CanvasWidth = window.innerWidth - 20;
+    }
+
+    this.CanvasHeight = 400;
+  }
+
+  //
+  // Initialize variables with default values
+  //
+  setDefaults() {
     //
     // Game variables
     //
@@ -454,10 +484,10 @@ export class BlockComponent implements OnInit {
     //
     // Default Settings
     //
-    this.barMaxHeight = 300;
-    this.barMinHeight = 30;
-    this.barMaxGap = 140;
-    this.barMinGap = 140;
+    this.barGap = 140;
+    this.barGapRange = 30
+    this.barMaxHeight = this.CanvasHeight - this.barGap - this.barGapRange;
+    this.barMinHeight = this.barGapRange;
 
     this.updateGameInterval = 10; // Milliseconds
     this.addObstacleInterval = 100; // Milliseconds
@@ -467,10 +497,22 @@ export class BlockComponent implements OnInit {
     this.blockUpKey = -3;
     this.blockDownKey = 3;
 
-    this.spacePress = -10;
     this.clickCanvas = -50;
-    this.gravity = .5;
-    this.gravitySpeed = .1;
+    this.gravity = 0;
+    this.gravitySpeed = .08;
+  }
+
+  ngOnInit() {
+    this.GameModes = Object.freeze({
+      BlockEasy: 'easy',
+      BlockHard: 'hard',
+      BlockImpossible: 'impossible',
+      BlockFlappy: 'flappy'
+    });
+    this.GameKeys = Object.freeze({UP: 'ArrowUp', DOWN: 'ArrowDown', SPACE: ' '});
+
+    this.setCanvasSize()
+    this.setDefaults();
 
     this.updateGameMethod = this.updateGameArea.bind(this);
     this.createGameAreaMethod = this.createGameArea.bind(this);
