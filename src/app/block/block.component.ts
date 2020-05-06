@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorage } from '../services/local-storage';
+import { LocalStorage } from '../services/localStorage.service';
 
 @Component({
   selector: 'app-block',
@@ -343,11 +343,10 @@ export class BlockComponent implements OnInit {
         if (this.myGamePiece.crashWith(this.myObstacles[i])) {
             this.myGameArea.stop();
 
-            //
-            // Set new high score
-            //
-            if (window.localStorage) {
-                this.localStorage.InsertScoreByName(this.gameMode, this.scoreValue, this.localStorage.scoreType.HIGH);
+            let id = this.localStorage.GetUser()
+
+            if (id){
+              // Send gameMode, scoreValue, and id to server to store in firebase
             }
 
             return;
@@ -399,10 +398,7 @@ export class BlockComponent implements OnInit {
     // Change game piece Y movement based on arrow keys
     //
     if (this.gameMode === this.GameModes.BlockFlappy) {
-        if (this.myGameArea.key && this.myGameArea.key === this.GameKeys.SPACE) {
-          this.myGamePiece.speedY = this.spacePress;
-          this.gravity = .5; // Reset gravity
-        } else if (this.clicked) {
+        if (this.clicked) {
           this.gravity = -3;
           this.myGamePiece.speedY = this.gravity;
           this.clicked = false;

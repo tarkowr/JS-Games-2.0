@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { Game } from '../models/Game';
-import { LocalStorage } from '../services/local-storage';
+import { LocalStorage } from '../services/localStorage.service';
 import { UserService } from '../services/user.service';
 import { GameService } from '../services/game.service';
 
