@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 const _ = require('underscore')
 const uuid = require('uuid')
 
-var admin = require("firebase-admin")
+let admin = require("firebase-admin")
 let serviceAccount = require("./.env/js-gms-firebase-adminsdk-fp7bn-957bd89151.json")
 
 admin.initializeApp({
@@ -18,12 +18,16 @@ let db = admin.firestore()
 const usersCollection = 'users'
 const scoresCollection = 'scores'
 const scoresDocuments = {
-    blockEasy: 'block-easy',
-    blockHard: 'block-hard',
-    blockImpossible: 'block-impossible',
-    blockFlappy: 'blockFlappy',
+    block: 'block',
     matching: 'matching'
 }
+const blockFields = {
+    easy: 'easy',
+    hard: 'hard',
+    impossible: 'impossible',
+    flappy: 'flappy'
+}
+const blockModes = [blockFields.easy, blockFields.hard, blockFields.impossible, blockFields.flappy]
 
 app.use(bodyParser.urlencoded({  
     extended: true,
@@ -39,11 +43,9 @@ app.use(cors()) // REMOVE FOR PROD
 function getTopHigh(scores, newScore, max){
     scores.push(newScore)
 
-    let sorted = scores.sort(function(a, b) {
-        return a.score - b.score
+    let sorted = scores.sort((a, b) => {
+        return b.score - a.score
     })
-
-    sorted = sorted.reverse()
     
     while (sorted.length > max) {
         sorted.pop()
@@ -56,7 +58,7 @@ function getTopHigh(scores, newScore, max){
 function getTopLow(scores, newScore, max){
     scores.push(newScore)
 
-    let sorted = scores.sort(function(a, b) {
+    let sorted = scores.sort((a, b) => {
         return a.score - b.score
     })
 
@@ -184,6 +186,77 @@ app.post('/game/matching/results', (req, res) => {
         .catch(err => {
             res.status(500).send(err)
         })
+})
+
+// Get block top scores
+app.get('/game/block', (req, res) => {
+    db.collection(scoresCollection).doc(scoresDocuments.block).get()
+    .then((doc) => {
+        res.status(200).json(doc.data())
+    })
+    .catch(err => {
+        res.status(500).send(err)
+    })
+})
+
+// Handle block results
+app.post('/game/block/results', (req, res) => {
+    const id = req.body.userId
+    const gameMode = req.body.gameMode
+    const date = new Date()
+    let score = req.body.score
+    const max = 5
+    const maxScore = 999999
+
+    try {
+        score = parseInt(score)
+        if (isNaN(score)) throw new Error('Not number')
+    } catch (e) {
+        res.status(500).send(e)
+        return
+    }
+
+    if (score > maxScore) score = maxScore
+
+    if (!blockModes.includes(gameMode)) {
+        res.status(500).send('Invalid gamemode')
+        return
+    }
+
+    const scoreObj = {
+        userId: id,
+        score: score,
+        date: date
+    }
+
+    // Get all scores
+    db.collection(scoresCollection).doc(scoresDocuments.block).get()
+        .then((scores) => {
+            let blockScores = scores.data()[gameMode]
+            let topScores = getTopHigh(_.clone(blockScores), scoreObj, max)
+
+            // Check if scores have changed
+            if (_.isEqual(blockScores, topScores)) {
+                res.status(200).json('success')
+                return
+            }
+
+            let update = {}
+            update[gameMode] = topScores
+
+            // Save updated scores to database
+            db.collection(scoresCollection).doc(scoresDocuments.block).update(update)
+                .then(() => {
+                    res.status(200).json('success')
+                }).catch((err) => {
+                    res.status(500).send(err)
+                })
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500),send(err)
+        })
+
 })
 
 const PORT = process.env.PORT || 3200

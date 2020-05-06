@@ -15,4 +15,12 @@ export class GameService {
     getMatching(){
         return this.http.get(`${environment.apiUrl}/game/matching`).toPromise()
     }
+
+    blockResults(id: String, gameMode: String, score: Number){
+        return this.http.post(`${environment.apiUrl}/game/block/results`, { userId: id, gameMode: gameMode, score: score }).toPromise()
+    }
+
+    getBlock(){
+        return this.http.get(`${environment.apiUrl}/game/block`).toPromise()
+    }
 }

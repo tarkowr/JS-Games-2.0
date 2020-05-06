@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   users: any;
   showForm: Boolean = false;
   pageLoaded: Boolean = false;
+  max: Number = 5;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,6 +44,15 @@ export class HomeComponent implements OnInit {
     return this.userService.get(id);
   }
 
+  // Populate top scores that have not reached max number
+  populateScores(scores){
+    while (scores.length < this.max) {
+      scores.push({})
+    }
+
+    return scores
+  }
+
   // Get username by ID
   lookupUsername(id: Number) {
     let username = '';
@@ -64,31 +74,36 @@ export class HomeComponent implements OnInit {
       .catch(() => {
         return null
       })
+    
+    let blockScores = await this.gameService.getBlock()
+      .catch(() => {
+        return null
+      })
 
     this.games = [
       {
         name: 'Matching',
-        highScores: matchingScores,
+        highScores: this.populateScores(matchingScores),
         route: '/matching'
       },
       {
         name: 'Block (Easy)',
-        highScores: null,
+        highScores: this.populateScores(blockScores['easy']),
         route: '/block'
       },
       {
         name: 'Block (Hard)',
-        highScores: null,
+        highScores: this.populateScores(blockScores['hard']),
         route: '/block'
       },
       {
         name: 'Block (Impossible)',
-        highScores: null,
+        highScores: this.populateScores(blockScores['impossible']),
         route: '/block'
       },
       {
         name: 'Block (Flappy)',
-        highScores: null,
+        highScores: this.populateScores(blockScores['flappy']),
         route: '/block'
       },
     ];

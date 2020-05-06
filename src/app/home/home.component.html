@@ -35,7 +35,7 @@
     — JS Games Leaderboards — 
   </div>
 
-  <div class="my-4 row">
+  <div class="my-4 row" *ngIf="games">
     <div class="col-12 col-md-6 col-lg-4 mb-3" *ngFor="let game of games">
       <div class="border bg-white rounded">
         <div class="text-center h3 p-3">
@@ -47,6 +47,7 @@
             <tr *ngFor="let score of game.highScores; let i = index">
               <td style="width: 10%;">{{ i + 1 }}.</td>
               <td *ngIf="score.userId"><strong>{{ score.score }} - {{ this.lookupUsername(score.userId) }}</strong></td>
+              <td *ngIf="!score.userId" class="text-secondary">Not Set</td>
             </tr>
           </tbody>
         </table>
@@ -61,6 +62,12 @@
           <a routerLink="{{ game.route }}"><button class="btn btn-primary bubble-font inc-font px-3">Play &nbsp; <i class="fa fa-chevron-circle-right"></i></button></a>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div *ngIf="!games" class="row text-center mt-5 justify-content-center">
+    <div class="spinner-border text-primary text-center" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
   </div>
 </div>

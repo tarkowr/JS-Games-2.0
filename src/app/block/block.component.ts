@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorage } from '../services/localStorage.service';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-block',
@@ -48,7 +49,7 @@ export class BlockComponent implements OnInit {
 
   localStorage: LocalStorage;
 
-  constructor() {
+  constructor(private gameService: GameService) {
     this.localStorage = new LocalStorage();
   }
 
@@ -346,7 +347,7 @@ export class BlockComponent implements OnInit {
             let id = this.localStorage.GetUser()
 
             if (id){
-              // Send gameMode, scoreValue, and id to server to store in firebase
+              this.gameService.blockResults(id, this.gameMode, this.scoreValue)
             }
 
             return;
@@ -430,10 +431,10 @@ export class BlockComponent implements OnInit {
 
   ngOnInit() {
     this.GameModes = Object.freeze({
-      BlockEasy: 'BlockEasy',
-      BlockHard: 'BlockHard',
-      BlockImpossible: 'BlockImpossible',
-      BlockFlappy: 'BlockFlappy'
+      BlockEasy: 'easy',
+      BlockHard: 'hard',
+      BlockImpossible: 'impossible',
+      BlockFlappy: 'flappy'
     });
     this.GameKeys = Object.freeze({UP: 'ArrowUp', DOWN: 'ArrowDown', SPACE: ' '});
     this.CanvasWidth = 720;
