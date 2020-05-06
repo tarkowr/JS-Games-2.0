@@ -17,9 +17,9 @@
   </div>
 
   <section id="modal" class="w-100 h-100">
-    <div id="box" class="bg-white text-center p-5 rounded">
+    <div id="box" class="bg-white text-center py-5 px-1 rounded">
       <div class="text-primary p-2 h2 lighter-font">🎊🎊 Congratulations 🎊🎊</div>
-        <p class="h4 lighter-font mb-4 mt-3" *ngIf="moves">
+        <p class="h4 lighter-font mb-4 mt-3 px-2" *ngIf="moves">
           You matched all of the cards in <strong> {{ moves }}</strong> moves! <br><br>
         </p>
       <button id="restart" class="btn btn-primary mr-1" (click)="OnRestart()">Play Again</button>
