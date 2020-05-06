@@ -12,8 +12,6 @@ import { BlockComponent } from './block/block.component';
 import { MatchingComponent } from './matching/matching.component';
 import { SettingsComponent } from './settings/settings.component';
 
-import { UserSettingsService } from './services/user-settings';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +29,7 @@ import { UserSettingsService } from './services/user-settings';
     FormsModule,
     HttpClientModule
   ],
-  providers: [UserSettingsService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

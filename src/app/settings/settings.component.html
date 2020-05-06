@@ -1,36 +1,28 @@
 <div class="container text-center mt-3">
-  <form class="border bg-white rounded p-3 text-left" [formGroup]="resetForm" (ngSubmit)="onSubmit()">
-      <p class="form-header w-100 text-center">Reset High Score(s)</p>
+  <form class="border bg-white rounded p-3 text-left row justify-content-center" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+      <p class="form-header w-100 text-center">Change Username</p>
 
-      <p class="inc-font">Block</p>
-      <div class="form-check form-check-inline ml-3">
-        <input class="form-check-input" type="checkbox" id="block-easy" value="block-easy" formControlName="blockEasy">
-        <label class="form-check-label" for="block-easy">Easy</label>
-      </div>
-      <div class="form-check form-check-inline ml-3">
-        <input class="form-check-input" type="checkbox" id="block-hard" value="block-hard" formControlName="blockHard">
-        <label class="form-check-label" for="block-hard">Hard</label>
-      </div>
-      <div class="form-check form-check-inline ml-3">
-        <input class="form-check-input" type="checkbox" id="block-impossible" value="block-impossible" formControlName="blockImpossible">
-        <label class="form-check-label" for="block-impossible">Impossible</label>
-      </div>
-      <div class="form-check form-check-inline ml-3">
-        <input class="form-check-input" type="checkbox" id="block-flappy" value="block-flappy" formControlName="blockFlappy">
-        <label class="form-check-label" for="block-flappy">Flappy</label>
-      </div>
+      <div class="col-12 col-lg-5">
 
-      <hr class="my-2"/>
+        <div class="form-group mb-3">
+          <label for="username" class="f4">Username <span class="text-danger">*</span></label>
+          <input type="text" required class="form-control primary-border " id="username" name="username" 
+          formControlName="username" maxlength="12"
+          [ngClass]="{ 'is-invalid': submitted && f.username.errors, 'danger-border': submitted && f.username.errors }">
 
-      <p class="inc-font">Matching</p>
-      <div class="form-check form-check-inline ml-3">
-        <input class="form-check-input" type="checkbox" id="matching-original" value="matching-original" formControlName="matchingOriginal">
-        <label class="form-check-label" for="matching-original">Original</label>
+          <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">Please provide a username.</div>
+            <div *ngIf="f.username.errors.pattern">Please provide a valid username.</div>
+            <div *ngIf="f.username.errors.serverError">Unable to save username. Please try again.</div>
+          </div>
+        </div>
+
+        <button [disabled]="loading" class="btn btn-login btn-block btn-primary my-1 py-3"><span *ngIf="!loading">SUBMIT</span>
+          <div *ngIf="loading" class="spinner-border text-white" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+
       </div>
-
-      <br/>
-
-      <button class="btn btn-primary mt-4 px-5 py-2">Submit</button>
-      <div class="text-danger small text-uppercase pt-1">This will reset all of your high scores for the selected games.</div>
   </form>
 </div>

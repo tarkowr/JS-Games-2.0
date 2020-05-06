@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
-import { UserSettingsService } from '../services/user-settings';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 
 @Component({
   selector: 'app-settings',
@@ -8,36 +7,35 @@ import { UserSettingsService } from '../services/user-settings';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  resetForm: FormGroup;
-  formBuilder: FormBuilder;
-  loading = false;
+  updateForm: FormGroup;
+  submitted: Boolean = false;
+  loading: Boolean = false;
 
-  constructor(private settings: UserSettingsService) { }
+  constructor(private formBuilder: FormBuilder) { }
 
-  ngOnInit() {
-    this.formBuilder = new FormBuilder();
-    this.resetForm = this.formBuilder.group({
-      blockEasy: [false],
-      blockHard: [false],
-      blockImpossible: [false],
-      blockFlappy: [false],
-      matchingOriginal: [false]
+  buildupdateForm(){
+    this.updateForm = this.formBuilder.group({
+      username: ['',  Validators.compose([
+        Validators.required, Validators.pattern(/^[a-zA-Z0-9]{1,12}$/)
+      ])]
     });
   }
 
-  get f() { return this.resetForm.controls }
+  ngOnInit() {
+    this.buildupdateForm()
+  }
 
-  onSubmit(){
-    this.loading = true;
+  get f() { return this.updateForm.controls }
 
-    if (this.resetForm.invalid) {
-      this.loading = false;
+  async onSubmit(){
+    this.submitted = true;
+
+    if (this.updateForm.invalid) {
       return;
     }
 
-    this.settings.resetScores(this.f.blockEasy.value, this.f.blockHard.value, this.f.blockImpossible.value, this.f.blockFlappy.value, this.f.matchingOriginal.value);
-
     this.loading = false;
-    this.resetForm.reset();
+    this.submitted = false;
+    this.updateForm.reset();
   }
 }

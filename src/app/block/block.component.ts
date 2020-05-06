@@ -18,7 +18,6 @@ export class BlockComponent implements OnInit {
   myScore: any;
   scoreValue: number;
   passedObstacles = [];
-  HS: any;
   gameMode: string;
   clicked: boolean;
   playing: boolean;
@@ -160,8 +159,7 @@ export class BlockComponent implements OnInit {
   //
   startGame() {
     this.myGamePiece = this.component(45, 45, '#f43030', 75, 180, ''); // Instantiate new Game Component -- 30,30
-    this.myScore = this.component('30px', 'Consolas', 'black', 500, 80, 'text');
-    this.HS = this.component('30px', 'Consolas', 'black', 418, 40, 'text');
+    this.myScore = this.component('30px', 'Consolas', 'black', 500, 40, 'text');
     this.playing = true;
     this.gameEnd = false;
 
@@ -421,13 +419,8 @@ export class BlockComponent implements OnInit {
     }
 
     //
-    // Display High Score and current score
+    // Display Current score
     //
-    if (window.localStorage) {
-      this.HS.text = 'HIGH SCORE: ' + this.localStorage.GetScoreByName(this.gameMode)[0];
-      this.HS.update();
-    }
-
     this.myScore.text = 'SCORE: ' + this.scoreValue;
     this.myScore.update();
 
