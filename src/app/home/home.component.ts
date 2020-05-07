@@ -35,15 +35,6 @@ export class HomeComponent implements OnInit {
 
   get f() { return this.createForm.controls }
 
-  // Get user ID from localstorage and get user from firebase
-  retrieveUser() {
-    const id = this.localStorage.GetUser();
-
-    if (!id) return null;
-
-    return this.userService.get(id);
-  }
-
   // Populate top scores that have not reached max number
   populateScores(scores){
     while (scores.length < this.max) {
@@ -54,22 +45,43 @@ export class HomeComponent implements OnInit {
   }
 
   // Get username by ID
-  lookupUsername(id: Number) {
+  lookupUsername(id: String) {
     let username = '';
 
     this.users.forEach(u => {
       if (u.id == id) {
         username = u.username;
       }
-    })
+    });
 
     return username;
   }
 
+  // Get user by ID
+  lookupUser(id: String) {
+    let tempUser = null;
+
+    this.users.forEach(u => {
+      if (u.id == id) {
+        tempUser = u;
+      }
+    });
+
+    return tempUser;
+  }
+
+  // Fetch users from firebase
+  async getUsers() {
+    this.users = await this.userService.getAll();
+
+    const id = this.localStorage.GetUser();
+
+    if (!id) this.user = null;
+    else this.user = this.lookupUser(id);
+  }
+
   // Retrieve high scores from firebase
   async fetchGameScores() {
-    this.users = await this.userService.getAll()
-
     let matchingScores = await this.gameService.getMatching()
       .catch(() => {
         return null
@@ -144,9 +156,9 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     this.buildUserForm();
-    this.fetchGameScores();
+    this.getUsers();
+    await this.fetchGameScores();
 
-    this.user = await this.retrieveUser()
     this.pageLoaded = true;
   }
 }
