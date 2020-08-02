@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Game } from '../models/Game';
 import { LocalStorage } from '../services/localStorage.service';
 import { UserService } from '../services/user.service';
@@ -156,7 +156,7 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     this.buildUserForm();
-    this.getUsers();
+    await this.getUsers();
     await this.fetchGameScores();
 
     this.pageLoaded = true;

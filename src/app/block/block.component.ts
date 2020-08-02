@@ -108,10 +108,10 @@ export class BlockComponent implements OnInit {
     this.barGap = 110;
 
     if (!this.mobile) {
-      this.addObstacleInterval = 70; // Milliseconds
-      this.barMovementSpeed = -4;
-      this.blockUpKey = -4;
-      this.blockDownKey = 4;
+      this.addObstacleInterval = 40; // Milliseconds
+      this.barMovementSpeed = -8;
+      this.blockUpKey = -8;
+      this.blockDownKey = 8;
     }
   }
 
@@ -120,15 +120,13 @@ export class BlockComponent implements OnInit {
   //
   GameDifficultyImpossible() {
     this.barGap = 110;
+    this.addObstacleInterval = 35;
 
     if (!this.mobile) {
-      this.addObstacleInterval = 50; // Milliseconds
-      this.barMovementSpeed = -5;
-      this.blockUpKey = -5;
-      this.blockDownKey = 5;
-    }
-    else {
-      this.addObstacleInterval = 90;
+      this.addObstacleInterval = 30; // Milliseconds
+      this.barMovementSpeed = -10;
+      this.blockUpKey = -10;
+      this.blockDownKey = 10;
     }
   }
 
@@ -399,12 +397,12 @@ export class BlockComponent implements OnInit {
     //
     if (this.gameMode === this.GameModes.BlockFlappy) {
         if (this.clicked) {
-          this.gravity = -3;
+          this.gravity = -6;
           this.myGamePiece.speedY = this.gravity;
           this.clicked = false;
         } else {
           this.myGamePiece.speedY = this.gravity; // Apply Gravity
-          this.gravity = this.gravity + ((this.gravity < 0) ? this.gravitySpeed * 1.5 : this.gravitySpeed); // Add to Gravity Pull Effect
+          this.gravity = this.gravity + ((this.gravity < 0) ? this.gravitySpeed * 2 : this.gravitySpeed); // Add to Gravity Pull Effect
         }
     } else {
         if (!this.mobile) {
@@ -489,17 +487,17 @@ export class BlockComponent implements OnInit {
     this.barMaxHeight = this.CanvasHeight - this.barGap - this.barGapRange;
     this.barMinHeight = this.barGapRange;
 
-    this.updateGameInterval = 10; // Milliseconds
-    this.addObstacleInterval = 100; // Milliseconds
+    this.updateGameInterval = 20; // Milliseconds
+    this.addObstacleInterval = 50; // Milliseconds
 
-    this.barMovementSpeed = -3;
+    this.barMovementSpeed = -6;
 
-    this.blockUpKey = -3;
-    this.blockDownKey = 3;
+    this.blockUpKey = -6;
+    this.blockDownKey = 6;
 
     this.clickCanvas = -50;
     this.gravity = 0;
-    this.gravitySpeed = .08;
+    this.gravitySpeed = .24;
   }
 
   ngOnInit() {
