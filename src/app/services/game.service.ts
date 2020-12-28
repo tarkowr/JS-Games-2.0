@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { environment } from '../../environments/environment'
 
 @Injectable({
@@ -8,19 +8,23 @@ import { environment } from '../../environments/environment'
 export class GameService {
     constructor(private http: HttpClient) { }
 
-    matchingResults(id: String, score: Number){
-        return this.http.post(`${environment.apiUrl}/game/matching/results`, { id: id, score: score }).toPromise()
+    // Fetch matching scores
+    getMatching() : Promise<any> {
+        return this.http.get(`${environment.apiUrl}/api/matching`).toPromise();
     }
 
-    getMatching(){
-        return this.http.get(`${environment.apiUrl}/game/matching`).toPromise()
+    // Save matching score
+    saveMatching(userId: string, score: number) : Promise<any> {
+        return this.http.post(`${environment.apiUrl}/api/matching`, { userId: userId, score: score }).toPromise();
     }
 
-    blockResults(id: String, gameMode: String, score: Number){
-        return this.http.post(`${environment.apiUrl}/game/block/results`, { userId: id, gameMode: gameMode, score: score }).toPromise()
+    // Fetch flappy scores
+    getFlappy() : Promise<any> {
+        return this.http.get(`${environment.apiUrl}/api/flappy`).toPromise();
     }
 
-    getBlock(){
-        return this.http.get(`${environment.apiUrl}/game/block`).toPromise()
+    // Save flappy score
+    saveFlappy(userId: string, score: number) : Promise<any> {
+        return this.http.post(`${environment.apiUrl}/api/flappy`, { userId: userId, score: score }).toPromise();
     }
 }

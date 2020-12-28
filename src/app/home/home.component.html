@@ -1,38 +1,35 @@
 <div class="container">
-  <div *ngIf="pageLoaded">
-    <div class="my-5 row justify-content-center" *ngIf="!user">
-      <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="col-12 col-lg-5">
-        <div class="form-group mb-3">
-          <label for="username" class="f4">Username <span class="text-danger">*</span></label>
-          <input type="text" required class="form-control primary-border " id="username" name="username" 
-          formControlName="username" maxlength="12"
-          [ngClass]="{ 'is-invalid': submitted && f.username.errors, 'danger-border': submitted && f.username.errors }">
+  <div class="my-5 row justify-content-center" *ngIf="!user && pageLoaded">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="col-12 col-lg-5">
+      <div class="form-group mb-3">
+        <label for="username" class="f4">Username <span class="text-danger">*</span></label>
+        <input type="text" required class="form-control primary-border " id="username" name="username" 
+        formControlName="username" maxlength="12"
+        [ngClass]="{ 'is-invalid': submitted && f.username.errors, 'danger-border': submitted && f.username.errors }">
 
-          <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-            <div *ngIf="f.username.errors.required">Please provide a username.</div>
-            <div *ngIf="f.username.errors.pattern">Please provide a valid username.</div>
-            <div *ngIf="f.username.errors.serverError">Unable to save username. Please try again.</div>
-          </div>
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Please provide a username.</div>
+          <div *ngIf="f.username.errors.pattern">Please provide a valid username.</div>
+          <div *ngIf="f.username.errors.serverError">Unable to save username. Please try again.</div>
         </div>
+      </div>
 
-        <button [disabled]="loading" class="btn btn-login btn-block btn-primary mt-1 py-3"><span *ngIf="!loading">SUBMIT</span>
-          <div *ngIf="loading" class="spinner-border text-white" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </button>
-      </form>
-    </div>
-
-    <div *ngIf="user" class="text-center my-4">
-      <h5>Playing as {{ user.username }}</h5>
-    </div>
-
-    <hr>
-
+      <button [disabled]="loading" class="btn btn-login btn-block btn-primary mt-1 py-3"><span *ngIf="!loading">SUBMIT</span>
+        <div *ngIf="loading" class="spinner-border text-white" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </button>
+    </form>
   </div>
 
+  <div *ngIf="user" class="text-center my-4">
+    <h5>Playing as {{ user.username }}</h5>
+  </div>
+
+  <!--<hr>-->
+
   <div class="text-center h1 mt-4 scaling-font">
-    — JS Games Leaderboards — 
+    JS Games Leaderboards
   </div>
 
   <div class="my-4 row" *ngIf="games">
@@ -46,8 +43,7 @@
           <tbody>
             <tr *ngFor="let score of game.highScores; let i = index">
               <td style="width: 10%;">{{ i + 1 }}.</td>
-              <td *ngIf="score.userId"><strong>{{ score.score }} - {{ this.lookupUsername(score.userId) }}</strong></td>
-              <td *ngIf="!score.userId" class="text-secondary">Not Set</td>
+              <td><strong>{{ score.score }}</strong></td>
             </tr>
           </tbody>
         </table>

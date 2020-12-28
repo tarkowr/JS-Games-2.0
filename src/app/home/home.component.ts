@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Game } from '../models/Game';
-import { LocalStorage } from '../services/localStorage.service';
+import { Game } from '../models/game';
+import { StorageService } from '../services/storage.service';
 import { UserService } from '../services/user.service';
 import { GameService } from '../services/game.service';
+import { storage } from '../app.constants';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +13,10 @@ import { GameService } from '../services/game.service';
 })
 export class HomeComponent implements OnInit {
   games: Game[];
-  localStorage: LocalStorage;
   createForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
   user: any;
-  users: any;
   showForm: Boolean = false;
   pageLoaded: Boolean = false;
   max: Number = 5;
@@ -25,109 +24,14 @@ export class HomeComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
+    private storageService: StorageService,
     private gameService: GameService) { 
-    this.localStorage = new LocalStorage();
-  }
-
-  getDictionaryLength(dict) {
-    return Object.keys(dict).length;
   }
 
   get f() { return this.createForm.controls }
 
-  // Populate top scores that have not reached max number
-  populateScores(scores){
-    while (scores.length < this.max) {
-      scores.push({})
-    }
-
-    return scores
-  }
-
-  // Get username by ID
-  lookupUsername(id: String) {
-    let username = '';
-
-    this.users.forEach(u => {
-      if (u.id == id) {
-        username = u.username;
-      }
-    });
-
-    return username;
-  }
-
-  // Get user by ID
-  lookupUser(id: String) {
-    let tempUser = null;
-
-    this.users.forEach(u => {
-      if (u.id == id) {
-        tempUser = u;
-      }
-    });
-
-    return tempUser;
-  }
-
-  // Fetch users from firebase
-  async getUsers() {
-    this.users = await this.userService.getAll();
-
-    const id = this.localStorage.GetUser();
-
-    if (!id) this.user = null;
-    else this.user = this.lookupUser(id);
-  }
-
-  // Retrieve high scores from firebase
-  async fetchGameScores() {
-    let matchingScores = await this.gameService.getMatching()
-      .catch(() => {
-        return null
-      })
-    
-    let blockScores = await this.gameService.getBlock()
-      .catch(() => {
-        return null
-      })
-
-    this.games = [
-      {
-        name: 'Matching',
-        highScores: this.populateScores(matchingScores),
-        route: '/matching'
-      },
-      {
-        name: 'Block (Easy)',
-        highScores: this.populateScores(blockScores['easy']),
-        route: '/block'
-      },
-      {
-        name: 'Block (Hard)',
-        highScores: this.populateScores(blockScores['hard']),
-        route: '/block'
-      },
-      {
-        name: 'Block (Impossible)',
-        highScores: this.populateScores(blockScores['impossible']),
-        route: '/block'
-      },
-      {
-        name: 'Block (Flappy)',
-        highScores: this.populateScores(blockScores['flappy']),
-        route: '/block'
-      },
-    ];
-  }
-
-  // Initialize the create user form
-  buildUserForm() {
-    this.createForm = this.formBuilder.group({
-      username: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9]{1,12}$/)
-      ])]
-    })
+  getDictionaryLength(dict) {
+    return Object.keys(dict).length;
   }
 
   // On user create form submission
@@ -140,9 +44,9 @@ export class HomeComponent implements OnInit {
 
     this.loading = true;
 
-    this.user = await this.userService.create(this.f.username.value)
+    this.user = await this.userService.add(this.f.username.value)
       .then(data => {
-        this.localStorage.SetUser(data['id'])
+        this.storageService.set(storage.userId, data.id);
         this.submitted = false;
         return data
       })
@@ -154,9 +58,63 @@ export class HomeComponent implements OnInit {
       })
   }
 
+  // OnInit: Initialize the create user form
+  private buildUserForm() {
+    this.createForm = this.formBuilder.group({
+      username: ['',  Validators.compose([
+        Validators.required, Validators.pattern(/^[a-zA-Z0-9]{1,12}$/)
+      ])]
+    })
+  }
+
+  // OnInit: Fetch user data
+  private async getUser() {
+    const id = this.storageService.get(storage.userId);
+
+    if (id) {
+      this.user = await this.userService.get(id)
+        .catch((err) => {
+          console.log(err);
+          return null;
+        });
+
+      console.log(this.user);
+    }
+  }
+
+  // OnInit: Retrieve scores from database
+  private async fetchGameScores() {
+    let matchingScores : Array<any> = await this.gameService.getMatching()
+      .catch(() => {
+        return null
+      });
+
+    console.log(matchingScores)
+    
+    let blockScores : Array<any> = await this.gameService.getFlappy()
+      .catch(() => {
+        return null
+      });
+
+    console.log(blockScores)
+
+    this.games = [
+      {
+        name: 'Matching',
+        highScores: matchingScores,
+        route: '/matching'
+      },
+      {
+        name: 'Flappy',
+        highScores: blockScores,
+        route: '/flappy'
+      },
+    ];
+  }
+
   async ngOnInit() {
     this.buildUserForm();
-    await this.getUsers();
+    await this.getUser();
     await this.fetchGameScores();
 
     this.pageLoaded = true;

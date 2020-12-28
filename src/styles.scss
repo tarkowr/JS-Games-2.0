@@ -1,32 +1,53 @@
 $font: 'Muli', sans-serif;
 $breakpoint: 992px;
 
+// Global SCSS variables
+:root {}
+
+/*Variable Overrides*/
+$theme-colors: (
+  "primary": #26B1FF,
+  "secondary":#0E425F,
+  "secondary-light": #186fa0,
+  "lightest": #fafdff,
+  "light-gray": #DAE6ED,
+  "gray": rgb(138, 138, 138),
+  "info": #FF247F,
+  "success": #00f437
+);
+
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
 html, body {
     width: 100% !important;
-    height: 100% !important;
     margin: 0;
     font-family: $font; 
-    font-weight: 200;
-    scroll-behavior: smooth;
+    font-weight: 300;
     font-size: 1em;
     padding: 0;
 }
 
-.not-selectable{
+.not-selectable {
     user-select: none;
 }
 
 .inc-font {
     font-size: 1.2em;
 }
+.f6{
+    font-weight: 600 !important;
+}
 .f4{
-    font-weight: 400;
+    font-weight: 400 !important;
 }
-.light-font {
-    font-weight: 300;
+.f3 {
+    font-weight: 300 !important;
 }
-.lighter-font {
+.f2 {
     font-weight: 200 !important;
+}
+.f1 {
+    font-weight: 100 !important;
 }
 
 .default-font {
@@ -41,17 +62,22 @@ html, body {
     font-weight: 300;
 }
 
-@media (max-width: $breakpoint){
-    .h1{
-        font-size: 1.5rem;
-    }
-    .h2{
-        font-size: 1.25rem;
-    }
-    .h3{
-        font-size: 1.1rem;
-    }
-    .h4{
-        font-size: 1rem;
-    }
+.form-control {
+    font-weight: 300 !important;
+}
+label{
+    font-weight: 500;
+}
+.invalid-feedback {
+    font-weight: 500;
+}
+
+/*.page-margin-top {
+    margin-top: var(--navHeight) !important;
+}
+.page-min-height {
+    min-height: calc(100vh - var(--navHeight)) !important;
+}*/
+.height-100 {
+    min-height: 100vh !important;
 }

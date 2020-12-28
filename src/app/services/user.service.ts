@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { environment } from '../../environments/environment'
 
 @Injectable({
@@ -8,15 +8,13 @@ import { environment } from '../../environments/environment'
 export class UserService {
     constructor(private http: HttpClient) { }
 
-    create(username: String){
-        return this.http.post(`${environment.apiUrl}/user/create`, { username: username }).toPromise()
+    // Fetch user data by ID
+    get(id: string) : Promise<any> {
+        return this.http.get(`${environment.apiUrl}/api/user/${id}`).toPromise();
     }
 
-    get(id: String){
-        return this.http.post(`${environment.apiUrl}/user/get`, { id: id }).toPromise()
-    }
-
-    getAll(){
-        return this.http.get(`${environment.apiUrl}/user/get/all`).toPromise()
+    // Add a new user to the website
+    add(username: string) : Promise<any> {
+        return this.http.post(`${environment.apiUrl}/api/user`, { username: username }).toPromise();
     }
 }

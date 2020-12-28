@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorage } from '../services/localStorage.service';
+import { StorageService } from '../services/storage.service';
 import { GameService } from '../services/game.service';
+import { storage } from '../app.constants';
 
 @Component({
   selector: 'app-matching',
@@ -21,11 +22,9 @@ export class MatchingComponent implements OnInit {
   openedCards: any;
   cardsRemaining: number;
   complete: number;
-  localStorage: LocalStorage;
 
-  constructor(private gameService: GameService) { 
-    this.localStorage = new LocalStorage();
-  }
+  constructor(private gameService: GameService,
+    private storageService: StorageService) { }
 
   //
   // Generate a full shuffled list of cards in pairs
@@ -159,10 +158,13 @@ export class MatchingComponent implements OnInit {
   //
   async GameWon() {
       if (this.matchedCard.length === this.complete) {
-        let id = this.localStorage.GetUser()
+        let id = this.storageService.get(storage.userId);
 
         if (id) {
-          await this.gameService.matchingResults(id, this.moves)
+          await this.gameService.saveMatching(id, this.moves)
+            .catch((err) => {
+              console.log(err);
+            });
         }
 
         this.modal.style.display = 'block';

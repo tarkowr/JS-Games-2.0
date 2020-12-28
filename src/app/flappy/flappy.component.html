@@ -1,0 +1,14 @@
+<div class="text-center m-0 mt-5">
+    <div id="game-board">
+        <canvas id="board" class="d-none border bg-white" (click)="canvasClicked($event)"></canvas>
+    </div>
+
+    <div class="not-selectable">
+        Tap the screen the move the block
+    </div>
+
+    <div *ngIf="gameEnd" class="my-4 createGameAreaMethod">
+        <button id="exit" class="btn btn-primary mx-2 game-mode-btn">Exit</button>
+        <button id="restart" class="btn btn-outline-primary mx-2 game-mode-btn" (click)="restartGame()">Restart</button>
+    </div>
+</div>
