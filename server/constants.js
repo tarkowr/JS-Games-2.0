@@ -1,7 +1,10 @@
 module.exports = { 
-    firebaseCollections : {
+    firebaseCollections: {
         users: 'users',
         matching: 'matching',
         flappy: 'flappy'
+    },
+    app: {
+        maxRecords: 10,
     }
 }

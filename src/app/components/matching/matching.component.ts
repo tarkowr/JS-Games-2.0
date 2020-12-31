@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from '../services/storage.service';
-import { GameService } from '../services/game.service';
-import { storage } from '../app.constants';
+import { StorageService } from '../../services/storage.service';
+import { GameService } from '../../services/game.service';
+import { storage } from '../../app.constants';
 
 @Component({
   selector: 'app-matching',

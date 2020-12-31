@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Game } from '../models/game';
-import { StorageService } from '../services/storage.service';
-import { UserService } from '../services/user.service';
-import { GameService } from '../services/game.service';
-import { storage } from '../app.constants';
+import { Game } from '../../models/game';
+import { StorageService } from '../../services/storage.service';
+import { UserService } from '../../services/user.service';
+import { GameService } from '../../services/game.service';
+import { storage } from '../../app.constants';
 
 @Component({
   selector: 'app-home',

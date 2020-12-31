@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(compression())
 
-// app.use(express.static(__dirname + '/dist'))
+app.use(express.static(__dirname + '/dist'))
 app.use(cors()) // REMOVE FOR PROD
 
 // Get user from db by ID
@@ -75,7 +75,8 @@ app.post('/api/user', async (req, res) => {
 
 // Get matching scores
 app.get('/api/matching', async (req, res) => {
-    let snapshot = await db.collection(constants.firebaseCollections.matching).get()
+    let snapshot = await db.collection(constants.firebaseCollections.matching)
+        .orderBy('score', 'asc').limit(constants.app.maxRecords).get()
         .catch((err) => {
             console.log(err)
             res.status(500).send()
@@ -123,7 +124,8 @@ app.post('/api/matching', async (req, res) => {
 
 // Get flappy scores
 app.get('/api/flappy', async (req, res) => {
-    let snapshot = await db.collection(constants.firebaseCollections.flappy).get()
+    let snapshot = await db.collection(constants.firebaseCollections.flappy)
+        .orderBy('score', 'desc').limit(constants.app.maxRecords).get()
         .catch((err) => {
             console.log(err)
             res.status(500).send()
@@ -169,9 +171,9 @@ app.post('/api/flappy', async (req, res) => {
     res.status(200).send()
 })
 
-// app.get('*', function(req, res) {
-//     res.sendFile(path.join(__dirname + '/dist/index.html'))
-// })
+app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname + '/dist/index.html'))
+})
 
 const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){

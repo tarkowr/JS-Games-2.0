@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { FlappyComponent } from './flappy/flappy.component';
-import { MatchingComponent } from './matching/matching.component';
+import { HomeComponent } from './components/home/home.component';
+import { PageNotFoundComponent } from './components/Static/page-not-found/page-not-found.component';
+import { FlappyComponent } from './components/flappy/flappy.component';
+import { MatchingComponent } from './components/matching/matching.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
