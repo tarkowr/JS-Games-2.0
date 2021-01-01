@@ -10,95 +10,83 @@ import { storage } from '../../app.constants';
 })
 export class MatchingComponent implements OnInit {
 
-  cardNames: string[];
-  card: any;
-  cards: any;
-  deck: any;
-  moves: number;
-  counter: any;
-  bestScore: any;
-  modal: any;
-  matchedCard: any;
-  openedCards: any;
+  moves: number = 0;
   cardsRemaining: number;
-  complete: number;
+  cardNames: string[] = ['amazon', 'android', 'apple', 'facebook-square', 'github', 'instagram', 'linkedin-square', 'snapchat', 'windows', 'youtube'];
+  private cards: Element[] = [];
+  private modal: HTMLElement;
+  private openedCards: Element[] = [];
+
+  private startTimeout: any;
+  private showTimeout: any;
+
+  private get matchedCards() : HTMLCollection {
+    return document.getElementsByClassName('match');
+  }
+  
+  private get hasWonGame() : boolean {
+    return this.matchedCards.length === this.cards.length;
+  }
 
   constructor(private gameService: GameService,
     private storageService: StorageService) { }
 
-  //
-  // Generate a full shuffled list of cards in pairs
-  // 
-  DoubleListAndShuffle(){
-    this.cardNames.forEach((name) => {
-      this.cardNames.push(name);
-    });
-    
-    return this.ShuffleCards(this.cardNames);
-  }
-
-  //
-  // Shuffle the cards
-  //
-  ShuffleCards(array) {
+  private shuffle(array) {
       let currentIndex = array.length, tempValue, randIndex;
 
       while (currentIndex !== 0) {
-          randIndex = Math.floor(Math.random() * currentIndex); // Get random card index
+          randIndex = Math.floor(Math.random() * currentIndex);
           currentIndex -= 1;
           tempValue = array[currentIndex]; 
           array[currentIndex] = array[randIndex];
           array[randIndex] = tempValue;
       }
+
       return array;
   }
 
-  //
-  // Start a new game
-  //
-  StartGame() {      
-    this.cards = this.ShuffleCards(this.cards);
-    
-    for(let i = 0; i < this.cards.length; i++) {
-      this.cards[i].classList.remove('show', 'open', 'match', 'disabled');
-    }
-
-    this.moves = 0;
-    this.cardsRemaining = this.cards.length;
-    this.bestScore = undefined;
+  private forEachCard(callback: (card: Element) => any) {
+    Array.prototype.filter.call(this.cards, (card: Element) => callback(card));
   }
 
-  //
-  // Toggles open/show classes to display cards
-  //
-  DisplayCard = function(elem: Element) {
+  private startGame() { 
+    this.startTimeout = setTimeout(() => {
+      this.cards = Array.from(document.getElementsByClassName('boardCard'));
+  
+      this.moves = 0;
+      this.openedCards = [];
+      this.cardsRemaining = this.cards.length;
+      this.modal = document.getElementById('modal');  
+
+      this.forEachCard((card: Element) => card.classList.remove('match'));
+    }, 500);
+  }
+
+  private displayCard = function(elem: Element) {
       elem.classList.toggle('open');
       elem.classList.toggle('show');
       elem.classList.toggle('disabled');
   };
 
-  //
-  // Check if opened cards match
-  //
-  CardOpen(elem: Element) {
+  private onCardOpen(elem: Element) {
       this.openedCards.push(elem);
 
       if (this.openedCards.length === 2) {
-        this.MoveCounter();
+        this.moves++;
 
-          if (this.openedCards[0].type === this.openedCards[1].type) {
-            this.Matched();
-          }
-          else{
-            this.Unmatched();
-          }
+        if (this.openedCards[0].id === this.openedCards[1].id) {
+          this.onMatch();
+          return;
+        }
+        
+        this.onNoMatch();
       }
   };
 
   //
   // Two opened cards match
   //
-  Matched() {
+  private onMatch() {
       this.openedCards[0].classList.add('match', 'disabled');
       this.openedCards[1].classList.add('match', 'disabled');
       this.openedCards[0].classList.remove('show', 'open', 'no-event');
@@ -111,116 +99,84 @@ export class MatchingComponent implements OnInit {
   //
   // Two opened cards do not match
   //
-  Unmatched() {
+  private onNoMatch() {
     this.openedCards[0].classList.add('unmatched');
     this.openedCards[1].classList.add('unmatched');
-    this.Disable();
+    this.disableDeck();
 
-    setTimeout(() => {
+    this.showTimeout = setTimeout(() => {
       this.openedCards[0].classList.remove('show', 'open', 'no-event', 'unmatched');
       this.openedCards[1].classList.remove('show', 'open', 'no-event', 'unmatched');
 
-      this.Enable();
+      this.reEnableDeck();
       this.openedCards = [];
-    }, 1100);
+    }, 1200);
   }
 
-  //
-  // Disable all cards
-  //
-  Disable() {
-      Array.prototype.filter.call(this.cards, (card) => {
-          card.classList.add('disabled');
-      });
+  private disableDeck() {
+    this.forEachCard((card: Element) => card.classList.add('disabled'));
   }
 
-  //
-  // Enable unmatched cards
-  //
-  Enable() {
-      Array.prototype.filter.call(this.cards, (card) => {
-          card.classList.remove('disabled');
-          for(let i = 0; i < this.matchedCard.length; i++) {
-              this.matchedCard[i].classList.add('disabled');
-          }
-      });
+  private reEnableDeck() {
+    this.forEachCard((card: Element) => card.classList.remove('disabled'));
+    Array.prototype.filter.call(this.matchedCards, (card: Element) => {
+      card.classList.add('disabled');
+    });
   }
 
-  //
-  // Count the player's moves
-  //
-  MoveCounter() {
-    this.moves++;
+  private onGameWin() {
+    let id = this.storageService.get(storage.userId);
+
+    if (id) {
+      this.gameService.saveMatching(id, this.moves)
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    this.modal.style.display = 'block';
   }
 
-  //
-  // Player Wins
-  //
-  async GameWon() {
-      if (this.matchedCard.length === this.complete) {
-        let id = this.storageService.get(storage.userId);
-
-        if (id) {
-          await this.gameService.saveMatching(id, this.moves)
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-
-        this.modal.style.display = 'block';
-      }
-  }
-
-  //
-  // Hide the results modal
-  //
-  CloseModal(){
+  closeModal(){
     this.modal.style.display = 'none';
   }
 
   //
-  // Add event listener to each card
+  // Click event handler on each card
   //
-  HandleCardClick(e: Event) {
+  handleCardClick(e: Event) {
+    if (this.cards.length == 0) return;
+
     let elem = e.target as Element;
 
     if (elem.tagName === 'I'){
       elem = elem.parentNode as Element;
     }
 
-    this.DisplayCard(elem);
-    this.CardOpen(elem);
-    this.GameWon();
+    this.displayCard(elem);
+    this.onCardOpen(elem);
+
+    if (this.hasWonGame) this.onGameWin();
   }
 
-  //
-  // Restart the game
-  //
-  OnRestart() {
-    location.reload();
+  restart() {
+    this.closeModal();
+    clearTimeout(this.startTimeout);
+    clearTimeout(this.showTimeout);
+
+    this.cardNames = this.shuffle(this.cardNames);
+
+    this.forEachCard((card: Element) => {
+      card.classList.remove('show', 'open', 'disabled', 'no-event', 'unmatched');
+      card.classList.add('match');
+    });
+
+    this.cards = [];
+    this.startGame();
   }
 
   ngOnInit() {
-
-    this.cardNames = ['amazon', 'android', 'apple', 'facebook-square', 'github', 'instagram', 'linkedin-square', 'snapchat', 'windows', 'youtube'];
-    this.DoubleListAndShuffle();
-
-    setTimeout(() => {
-      this.card = document.getElementsByClassName('boardCard');
-      this.cards = Array.from(this.card);
-  
-      this.deck = document.getElementById('card-deck');
-      this.moves = 0;
-  
-      this.modal = document.getElementById('modal');  
-      this.matchedCard = document.getElementsByClassName('match');
-      this.openedCards = [];
-      this.cardsRemaining = this.cards.length;
-  
-      this.complete = this.cards.length;
-  
-      this.StartGame();
-    }, 0)
+    this.cardNames = this.shuffle(this.cardNames.concat(this.cardNames));    
+    this.startGame();
   }
-
 }

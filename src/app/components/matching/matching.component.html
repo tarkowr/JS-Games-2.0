@@ -1,29 +1,29 @@
 <div class="text-center mt-4">
   <main id="game" class="bg-white border m-auto rounded">
-    <ul id="card-deck" class="deck p-1 w-100 mb-0"  *ngIf="cardNames">
-        <li class="boardCard match m-1 rounded" *ngFor="let card of cardNames" type="{{card}}" (click)="HandleCardClick($event)">
+    <ul id="card-deck" class="deck p-1 w-100 mb-0" *ngIf="cardNames">
+        <li class="boardCard m-1 rounded match" *ngFor="let card of cardNames" id="{{card}}" (click)="handleCardClick($event)">
           <i class="fa fa-{{card}}"></i>
         </li>
     </ul>
   </main>
 
-  <section id="settings" class="text-center bg-white border p-2 mt-2 mx-auto rounded">
+  <section id="stats" class="text-center bg-white border p-2 mt-2 mx-auto rounded">
     <span class="moves" *ngIf="moves !== undefined">{{ moves }}</span> Move(s) <br>
     <span id="cards-left" *ngIf="cardsRemaining !== undefined">{{ cardsRemaining }}</span> Cards Remaining 
   </section>
 
   <div class="restart text-center mx-auto my-2">
-    <button class="btn btn-primary w-100 py-3 text-uppercase" (click)="OnRestart()">Restart</button>
+    <button class="btn btn-primary w-100 py-3 text-uppercase" (click)="restart()">Restart</button>
   </div>
 
   <section id="modal" class="w-100 h-100">
     <div id="box" class="bg-white text-center py-5 px-1 rounded">
-      <div class="text-primary p-2 h2">🎊🎊 Congratulations 🎊🎊</div>
-        <p class="h4 mb-4 mt-3 px-2" *ngIf="moves">
+      <div class="modal-heading p-2 h3">🎊 Congratulations 🎊</div>
+        <p class="h5 mb-4 mt-3 px-2" *ngIf="moves">
           You matched all of the cards in <strong> {{ moves }}</strong> moves! <br><br>
         </p>
-      <button id="restart" class="btn btn-primary mr-1" (click)="OnRestart()">Play Again</button>
-      <button class="btn btn-outline-primary ml-1" (click)="CloseModal()">Close</button>
+      <button id="restart" class="btn btn-primary mr-1" (click)="restart()">Play Again</button>
+      <button class="btn btn-outline-primary ml-1" (click)="closeModal()">Close</button>
     </div>
   </section>
 </div>

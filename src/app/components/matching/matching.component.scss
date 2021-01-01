@@ -42,9 +42,9 @@ main{
 .deck .boardCard.disabled{
     pointer-events: none;
 }
-#settings{
+#stats{
     width: 350px;
-    font-size: 24px;
+    font-size: 20px;
 }
 .restart {
     width: 350px;
@@ -66,4 +66,12 @@ main{
     position: fixed;
     top: 30%;
     margin-left: 10%;
+}
+@media(max-width: 992px) {
+    #box{
+        top: 15%;
+    }
+    .modal-heading {
+        font-size: 20px !important;
+    }
 }
