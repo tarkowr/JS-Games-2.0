@@ -17,13 +17,8 @@ export class FlappyComponent implements OnInit {
   private passedObstacles = [];
   clicked: boolean = false;
   gameEnd: boolean = false;
+  beforeGame: boolean = true;
   score: number = 0;
-
-  private barMaxHeight: number;
-  private barMinHeight: number;
-  private barGap: number = 160;
-  private barGapRange: number = 30; // Larger number will create smaller spread
-  private barMovementSpeed: number = -6;
 
   private updateGameInterval: number = 20;
   private addObstacleInterval: number = 50;
@@ -35,31 +30,44 @@ export class FlappyComponent implements OnInit {
   private windowSubscription: Subscription;
 
   private canvasHeight: number = 400;
-
   private get canvasWidth() : number {
     return this.mobile ? window.innerWidth - 20 : 720;
+  }
+
+  private barGap: number = 160;
+  private barGapRange: number = 30; // Larger number will create smaller spread
+  private barMovementSpeed: number = -6;
+
+  private barMinHeight: number = this.barGapRange;
+  private get barMaxHeight(): number {
+    return this.canvasHeight - this.barGap - this.barGapRange;
   }
 
   constructor(private gameService: GameService,
     private windowService: WindowService,
     private storageService: StorageService) {}
 
-  startGame() {
+  setupGameArea() {
+    this.createGameArea(this.updateGameArea.bind(this), this.updateGameInterval);
     this.gamePiece = this.component(45, 45, '#FF247F', 75, 180);
+    this.gameArea.setup();
     this.gameEnd = false;
+    this.updateGameArea();
+  }
+
+  startGame() {
+    this.beforeGame = false;
     this.gameArea.start();
   }
 
   restartGame() {
-    this.gameArea.clear();
-
-    this.gamePiece = null;
+    this.beforeGame = true;
     this.obstacles = [];
     this.passedObstacles = [];
     this.score = 0;
     this.gravity = 0;
 
-    this.startGame();
+    this.setupGameArea();
   }
 
   //
@@ -77,12 +85,12 @@ export class FlappyComponent implements OnInit {
 
     this.gameArea = {
 
-      canvas : document.getElementById('board'), // Canvas Object
+      canvas : document.getElementById('board'),
       key : new Object(),
       frameNo : 0,
       context : new Object(),
 
-      start() {
+      setup() {
           this.canvas.width = gameContext.canvasWidth;
           this.canvas.height = gameContext.canvasHeight;
 
@@ -90,7 +98,10 @@ export class FlappyComponent implements OnInit {
           this.canvas.classList.remove('d-none');
 
           this.frameNo = 0;
-          this.interval = setInterval(updateArea, updateInterval);
+      },
+
+      start() {
+        this.interval = setInterval(updateArea, updateInterval);
       },
 
       //
@@ -270,25 +281,18 @@ export class FlappyComponent implements OnInit {
   //
   canvasClicked(e) {
     this.clicked = true;
-  }
-
-  private handleScreenSize(){    
-    this.windowSubscription = this.windowService.large.subscribe(isMobile => {
-      this.mobile = isMobile;
-    });
-  }
-
-  private setBarSize() {
-    this.barMaxHeight = this.canvasHeight - this.barGap - this.barGapRange;
-    this.barMinHeight = this.barGapRange;
+    
+    if (this.beforeGame) {
+      this.startGame();
+    }
   }
 
   ngOnInit() {
-    this.handleScreenSize();
-    this.setBarSize();
+    this.windowSubscription = this.windowService.large.subscribe(isMobile => {
+      this.mobile = isMobile;
+    });
 
-    this.createGameArea(this.updateGameArea.bind(this), this.updateGameInterval);
-    this.startGame();
+    this.setupGameArea();
   }
 
   ngOnDestroy() {

@@ -5,11 +5,11 @@
 
     <div class="not-selectable">
         <h5>Score: {{ score }}</h5>
-        Tap the screen the move the block
+        <div *ngIf="beforeGame">Tap the screen to begin</div>
     </div>
 
     <div *ngIf="gameEnd" class="my-4">
-        <button id="exit" class="btn btn-primary mx-2 game-mode-btn">Exit</button>
+        <a routerLink="/"><button id="exit" class="btn btn-primary mx-2 game-mode-btn">Exit</button></a>
         <button id="restart" class="btn btn-outline-primary mx-2 game-mode-btn" (click)="restartGame()">Restart</button>
     </div>
 </div>
