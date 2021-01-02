@@ -1,1 +1,31 @@
-<p>navbar works!</p>
+<div class="app-navbar fixed-bottom bg-white w-100">
+    <div class="w-100 text-center d-flex justify-content-around">
+        <a routerLink="/home" routerLinkActive="text-primary">
+            <div class="navbar-group">
+                <i class="fa fa-igloo"></i>
+                <div class="navbar-label">Home</div>
+            </div>
+        </a>
+
+        <a routerLink="/games" routerLinkActive="text-primary">
+            <div class="navbar-group">
+                <i class="fa fa-play"></i>
+                <div class="navbar-label">Games</div>
+            </div>
+        </a>
+
+        <a routerLink="/leaderboards" routerLinkActive="text-primary">
+            <div class="navbar-group">
+                <i class="fa fa-stream"></i>
+                <div class="navbar-label">Ranks</div>
+            </div>
+        </a>
+
+        <a routerLink="/profile" routerLinkActive="text-primary">
+            <div class="navbar-group">
+                <i class="fa fa-user-circle"></i>
+                <div class="navbar-label">Profile</div>
+            </div>
+        </a>
+    </div>
+</div>

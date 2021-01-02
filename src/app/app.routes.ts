@@ -8,7 +8,8 @@ import { LeaderboardsComponent } from './components/leaderboards/leaderboards.co
 import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },
+    { path: '',   redirectTo: '/home', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent },
     { path: 'games', component: GamesComponent },
     { path: 'leaderboards', component: LeaderboardsComponent },
     { path: 'profile', component: ProfileComponent },

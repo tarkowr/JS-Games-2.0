@@ -2,7 +2,10 @@ $font: 'Muli', sans-serif;
 $breakpoint: 992px;
 
 // Global SCSS variables
-:root {}
+:root {
+    --headingHeight: 45px;
+    --navbarHeight: 50px;
+}
 
 /*Variable Overrides*/
 $theme-colors: (
@@ -57,6 +60,9 @@ html, body {
 .bubble-font {
     font-family: 'Staatliches', $font !important;
 }
+.oswald {
+    font-family: 'Oswald', $font !important;
+}
 
 .h1, .h2, .h3, .h4, .h5, .h6 {
     font-weight: 300;
@@ -72,12 +78,15 @@ label{
     font-weight: 500;
 }
 
-/*.page-margin-top {
-    margin-top: var(--navHeight) !important;
+.page-margin-top {
+    margin-top: var(--headingHeight) !important;
+}
+.page-margin-bottom {
+    margin-bottom: var(--navbarHeight) !important;
 }
 .page-min-height {
-    min-height: calc(100vh - var(--navHeight)) !important;
-}*/
+    min-height: calc(100vh - var(--headingHeight) - var(--navbarHeight)) !important;
+}
 .height-100 {
     min-height: 100vh !important;
 }
