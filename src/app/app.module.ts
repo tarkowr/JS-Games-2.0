@@ -8,6 +8,11 @@ import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/Static/page-not-found/page-not-found.component';
 import { FlappyComponent } from './components/flappy/flappy.component';
 import { MatchingComponent } from './components/matching/matching.component';
+import { HeaderComponent } from './components/Shared/header/header.component';
+import { NavbarComponent } from './components/Shared/navbar/navbar.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { GamesComponent } from './components/games/games.component';
+import { LeaderboardsComponent } from './components/leaderboards/leaderboards.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +21,11 @@ import { MatchingComponent } from './components/matching/matching.component';
     PageNotFoundComponent,
     FlappyComponent,
     MatchingComponent,
+    HeaderComponent,
+    NavbarComponent,
+    ProfileComponent,
+    GamesComponent,
+    LeaderboardsComponent,
  ],
   imports: [
     BrowserModule,
