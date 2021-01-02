@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Game } from '../../models/game';
 import { StorageService } from '../../services/storage.service';
 import { UserService } from '../../services/user.service';
 import { GameService } from '../../services/game.service';
 import { storage } from '../../app.constants';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,14 +12,15 @@ import { storage } from '../../app.constants';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  games: Game[];
+  games: any[];
   createForm: FormGroup;
-  submitted: Boolean = false;
-  loading: Boolean = false;
+  submitted: boolean = false;
+  loading: boolean = false;
   user: any;
-  showForm: Boolean = false;
-  pageLoaded: Boolean = false;
-  max: Number = 5;
+  showForm: boolean = false;
+  pageLoaded: boolean = false;
+
+  private userSubscription: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,32 +31,26 @@ export class HomeComponent implements OnInit {
 
   get f() { return this.createForm.controls }
 
-  getDictionaryLength(dict) {
-    return Object.keys(dict).length;
-  }
-
   // On user create form submission
   async onSubmit() {
     this.submitted = true;
 
-    if (this.createForm.invalid){
-      return;
-    }
+    if (this.createForm.invalid) return;
 
     this.loading = true;
 
-    this.user = await this.userService.add(this.f.username.value)
-      .then(data => {
-        this.storageService.set(storage.userId, data.id);
+    await this.userService.add(this.f.username.value)
+      .then(newUser => {
+        this.storageService.set(storage.userId, newUser.id);
+        this.userService.user = newUser;
         this.submitted = false;
-        return data
       })
       .catch(() => {
-        this.f.username.setErrors( {'serverError': true} )
+        this.f.username.setErrors( {'serverError': true} );
       })
       .finally(() => {
         this.loading = false;
-      })
+      });
   }
 
   // OnInit: Initialize the create user form
@@ -67,36 +62,20 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  // OnInit: Fetch user data
-  private async getUser() {
-    const id = this.storageService.get(storage.userId);
-
-    if (id) {
-      this.user = await this.userService.get(id)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
-
-      console.log(this.user);
-    }
+  // OnInit: Get user data
+  private getUser() {
+    this.userSubscription = this.userService.user.subscribe(user => {
+      this.user = user;
+    });
   }
 
   // OnInit: Retrieve scores from database
   private async fetchGameScores() {
     let matchingScores : Array<any> = await this.gameService.getMatching()
-      .catch(() => {
-        return null
-      });
-
-    console.log(matchingScores)
+      .catch(() => null);
     
-    let blockScores : Array<any> = await this.gameService.getFlappy()
-      .catch(() => {
-        return null
-      });
-
-    console.log(blockScores)
+    let flappyScores : Array<any> = await this.gameService.getFlappy()
+      .catch(() => null);
 
     this.games = [
       {
@@ -106,17 +85,21 @@ export class HomeComponent implements OnInit {
       },
       {
         name: 'Flappy',
-        highScores: blockScores,
+        highScores: flappyScores,
         route: '/flappy'
       },
     ];
-  }
-
-  async ngOnInit() {
-    this.buildUserForm();
-    await this.getUser();
-    await this.fetchGameScores();
 
     this.pageLoaded = true;
+  }
+
+  ngOnInit() {
+    this.buildUserForm();
+    this.getUser();
+    this.fetchGameScores();
+  }
+
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
   }
 }
