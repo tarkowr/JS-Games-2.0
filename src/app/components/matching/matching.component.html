@@ -1,4 +1,4 @@
-<div class="text-center mt-4">
+<div class="text-center">
   <main id="game" class="bg-white border m-auto rounded">
     <ul id="card-deck" class="deck p-1 w-100 mb-0" *ngIf="cardNames">
         <li class="boardCard m-1 rounded match" *ngFor="let card of cardNames" id="{{card}}" (click)="handleCardClick($event)">

@@ -31,8 +31,11 @@ export class AppComponent {
 
       if (user) {
         this.userService.user = user;
+        return;
       }
-  }
+    }
+
+    this.userService.user = {};
 }
 
 }

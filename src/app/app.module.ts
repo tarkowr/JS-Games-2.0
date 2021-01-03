@@ -13,6 +13,7 @@ import { NavbarComponent } from './components/Shared/navbar/navbar.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { GamesComponent } from './components/games/games.component';
 import { LeaderboardsComponent } from './components/leaderboards/leaderboards.component';
+import { SignupComponent } from './components/shared/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { LeaderboardsComponent } from './components/leaderboards/leaderboards.co
     ProfileComponent,
     GamesComponent,
     LeaderboardsComponent,
+    SignupComponent,
  ],
   imports: [
     BrowserModule,

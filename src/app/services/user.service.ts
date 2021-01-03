@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { User } from '../models/user';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,11 @@ export class UserService {
 
     set user(user: any) {
         this._user.next(user);
+    }
+
+    // Determine whether user object is empty
+    isNotEmpty(user: User) : boolean {
+        return Object.keys(user).length !== 0;
     }
 
     // Fetch user data by ID

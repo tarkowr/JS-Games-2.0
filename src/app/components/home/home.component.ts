@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { StorageService } from '../../services/storage.service';
 import { UserService } from '../../services/user.service';
 import { GameService } from '../../services/game.service';
-import { storage } from '../../app.constants';
 import { Subscription } from 'rxjs';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-home',
@@ -13,59 +11,25 @@ import { Subscription } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
   games: any[];
-  createForm: FormGroup;
-  submitted: boolean = false;
-  loading: boolean = false;
+
   user: any;
-  showForm: boolean = false;
-  pageLoaded: boolean = false;
+  fetchingUser: boolean = true;
 
   private userSubscription: Subscription;
 
   constructor(
-    private formBuilder: FormBuilder,
     private userService: UserService,
-    private storageService: StorageService,
     private gameService: GameService) { 
-  }
-
-  get f() { return this.createForm.controls }
-
-  // On user create form submission
-  async onSubmit() {
-    this.submitted = true;
-
-    if (this.createForm.invalid) return;
-
-    this.loading = true;
-
-    await this.userService.add(this.f.username.value)
-      .then(newUser => {
-        this.storageService.set(storage.userId, newUser.id);
-        this.userService.user = newUser;
-        this.submitted = false;
-      })
-      .catch(() => {
-        this.f.username.setErrors( {'serverError': true} );
-      })
-      .finally(() => {
-        this.loading = false;
-      });
-  }
-
-  // OnInit: Initialize the create user form
-  private buildUserForm() {
-    this.createForm = this.formBuilder.group({
-      username: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9]{1,12}$/)
-      ])]
-    })
   }
 
   // OnInit: Get user data
   private getUser() {
-    this.userSubscription = this.userService.user.subscribe(user => {
-      this.user = user;
+    this.userSubscription = this.userService.user.subscribe((user: User) => {
+      this.fetchingUser = false;
+
+      if (this.userService.isNotEmpty(user)){
+        this.user = user;
+      }
     });
   }
 
@@ -89,12 +53,9 @@ export class HomeComponent implements OnInit {
         route: '/flappy'
       },
     ];
-
-    this.pageLoaded = true;
   }
 
   ngOnInit() {
-    this.buildUserForm();
     this.getUser();
     this.fetchGameScores();
   }
