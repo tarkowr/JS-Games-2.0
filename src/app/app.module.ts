@@ -14,6 +14,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GamesComponent } from './components/games/games.component';
 import { LeaderboardsComponent } from './components/leaderboards/leaderboards.component';
 import { SignupComponent } from './components/shared/signup/signup.component';
+import { HighScoresComponent } from './components/shared/high-scores/high-scores.component';
+import { SpinnerComponent } from './components/Shared/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { SignupComponent } from './components/shared/signup/signup.component';
     GamesComponent,
     LeaderboardsComponent,
     SignupComponent,
+    HighScoresComponent,
+    SpinnerComponent,
  ],
   imports: [
     BrowserModule,

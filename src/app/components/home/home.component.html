@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row justify-content-center text-center px-3">
-    <div class="card p-3 col-12 col-lg-5">
+    <div class="card p-3 col-12 col-lg-5 card-box-shadow">
       <div *ngIf="user">
         <div class="alert alert-success" role="alert">
           Signed In!
@@ -16,45 +16,46 @@
       </div>
   
       <div *ngIf="!user && fetchingUser">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
+        <app-spinner></app-spinner>
       </div>
     </div>
   </div>
 
-  <div class="my-4 row" *ngIf="games">
-    <div class="col-12 col-md-6 col-lg-4 mb-3" *ngFor="let game of games">
-      <div class="border bg-white rounded">
-        <div class="text-center h3 p-3">
-          {{ game.name }}
-        </div>
-
-        <table *ngIf="game.highScores; else no_high_scores" class="table table-hover border-bottom">
-          <tbody>
-            <tr *ngFor="let score of game.highScores; let i = index">
-              <td style="width: 10%;">{{ i + 1 }}.</td>
-              <td><strong>{{ score.score }}</strong></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <ng-template #no_high_scores class="px-3">
-          <div class="w-100 text-center">
-            No high scores!
+  <div class="card my-3 card-box-shadow">
+    <div class="h4 text-center pt-3 pb-2">Games</div>
+    
+    <a routerLink="/flappy">
+      <div class="bg-light rounded mx-2 mb-2 border p-2">
+        <div class="row">
+          <div class="col-9">
+            <div class="h5">Flappy</div>
+            <div class="text-gray">Like Flappy Birds... but better</div>
           </div>
-        </ng-template>
-
-        <div class="text-center mb-3 mt-4">
-          <a routerLink="{{ game.route }}"><button class="btn btn-primary bubble-font inc-font px-3">Play &nbsp; <i class="fa fa-chevron-circle-right"></i></button></a>
+          <div class="col-3 d-flex justify-content-center align-self-center">
+            <i class="fa fa-chevron-right"></i>
+          </div>
         </div>
       </div>
-    </div>
+    </a>
+
+    <a routerLink="/matching">
+      <div class="bg-light rounded mx-2 mb-2 border p-2">
+        <div class="row">
+          <div class="col-9">
+            <div class="h5">Matching</div>
+            <div class="text-gray">Match all of the cards</div>
+          </div>
+          <div class="col-3 d-flex justify-content-center align-self-center">
+            <i class="fa fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </a>
   </div>
 
-  <div *ngIf="!games" class="text-center mt-5 justify-content-center">
-    <div class="spinner-border text-primary text-center" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
+  <div class="card my-3 card-box-shadow">
+    <app-high-scores label="Leaderboards" count="3"></app-high-scores>
   </div>
+
+  <div class="py-2"></div>
 </div>

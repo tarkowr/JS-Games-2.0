@@ -36,6 +36,5 @@ export class AppComponent {
     }
 
     this.userService.user = {};
-}
-
+  }
 }

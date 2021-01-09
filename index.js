@@ -2,6 +2,7 @@ const cors = require('cors')
 const compression = require('compression')
 const bodyParser = require('body-parser')
 const express = require('express')
+const NodeCache = require('node-cache')
 let app = express()
 const uuid = require('uuid')
 const constants = require('./server/constants')
@@ -11,7 +12,7 @@ let serviceAccount = require("./.env/bloxii-firebase-adminsdk-u5uj7-d42053061c.j
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://bloxii.firebaseio.com"
+    databaseURL: "https://bloxii.firebaseio.com",
 })
 let db = admin.firestore()
 
@@ -24,6 +25,39 @@ app.use(compression())
 
 app.use(express.static(__dirname + '/dist'))
 app.use(cors()) // REMOVE FOR PROD
+
+let cache = new NodeCache()
+const ttl = 24 * 60 * 60
+const usersCacheKey = 'users'
+
+async function getAllUsers() {
+    let cachedUsers = cache.get(usersCacheKey)
+
+    if (cachedUsers) {
+        return cachedUsers
+    }
+
+    return await db.collection(constants.firebaseCollections.users).get()
+        .then((snapshot) => {
+            let users = []
+            snapshot.forEach(doc => users.push(doc.data()))
+            cache.set(usersCacheKey, users, ttl)
+            return users
+        })
+        .catch(() => {
+            return null
+        })
+}
+
+async function addUsernameToScores(scores) {
+    let users = await getAllUsers()
+
+    scores.forEach(score => {
+        let user = users.find(u => u.id == score.userId)
+
+        score['username'] = user ? user.username : null
+    })
+}
 
 // Get user from db by ID
 app.get('/api/user/:id', async (req, res) => {
@@ -64,6 +98,14 @@ app.post('/api/user', async (req, res) => {
     }
 
     await db.collection(constants.firebaseCollections.users).doc(id).set(user)
+        .then(() => {
+            let cachedUsers = [ ...cache.get(usersCacheKey) ]
+
+            if (cachedUsers) {
+                cachedUsers.push(user)
+                cache.set(usersCacheKey, cachedUsers, ttl)
+            }
+        })
         .catch((err) => {
             console.log(err)
             res.status(500).send()
@@ -85,6 +127,8 @@ app.get('/api/matching', async (req, res) => {
     
     let scores = []
     snapshot.forEach(doc => scores.push(doc.data()))
+    
+    await addUsernameToScores(scores)
     
     res.status(200).json(scores)
 })
@@ -134,6 +178,8 @@ app.get('/api/flappy', async (req, res) => {
 
     let scores = []
     snapshot.forEach(doc => scores.push(doc.data()))
+
+    await addUsernameToScores(scores)
     
     res.status(200).json(scores)
 })
@@ -178,4 +224,6 @@ app.get('*', function(req, res) {
 const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){
     console.log(`Listening on port ${PORT}`)
+
+    getAllUsers()
 })
