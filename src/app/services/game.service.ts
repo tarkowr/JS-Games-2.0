@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ReplaySubject } from 'rxjs';
-import { HighScore } from '../models/highScore';
+import { HighScore } from '../models/high-score';
 import { Leaderboard } from '../models/leaderboard';
+import { Game } from '../models/game';
 
 @Injectable({
     providedIn: 'root'
@@ -21,6 +22,21 @@ export class GameService {
 
     set leaderboard(user: any) {
         this._leaderboard.next(user);
+    }
+
+    get games() : Game[] {
+        return [
+            {
+                name: 'Flappy',
+                description: 'Like Flappy Birds... but better',
+                path: '/flappy'
+            },
+            {
+                name: 'Matching',
+                description: 'Match all of the cards',
+                path: '/matching'
+            }
+        ];
     }
 
     // Fetch matching scores

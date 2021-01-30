@@ -1,4 +1,4 @@
-import { HighScore } from './highScore';
+import { HighScore } from './high-score';
 
 export interface Leaderboard {
     flappy: HighScore[];

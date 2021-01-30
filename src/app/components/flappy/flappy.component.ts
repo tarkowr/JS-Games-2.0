@@ -20,11 +20,11 @@ export class FlappyComponent implements OnInit {
   beforeGame: boolean = true;
   score: number = 0;
 
-  private updateGameInterval: number = 20;
-  private addObstacleInterval: number = 50;
+  private updateGameInterval: number = 10;
+  private addObstacleInterval: number = 100;
 
   private gravity: number = 0;
-  private velocity: number = 0.24;
+  private velocity: number = 0.08;
 
   private mobile: Boolean = true;
   private windowSubscription: Subscription;
@@ -36,7 +36,7 @@ export class FlappyComponent implements OnInit {
 
   private barGap: number = 160;
   private barGapRange: number = 30; // Larger number will create smaller spread
-  private barMovementSpeed: number = -6;
+  private barMovementSpeed: number = -3;
 
   private barMinHeight: number = this.barGapRange;
   private get barMaxHeight(): number {
@@ -253,12 +253,12 @@ export class FlappyComponent implements OnInit {
     this.gamePiece.speedY = 0;
 
     if (this.clicked) {
-      this.gravity = -6;
+      this.gravity = -3.5;
       this.gamePiece.speedY = this.gravity;
       this.clicked = false;
     } else {
       this.gamePiece.speedY = this.gravity;
-      this.gravity = this.gravity + ((this.gravity < 0) ? this.velocity * 2 : this.velocity); // Add to Gravity Pull Effect
+      this.gravity = this.gravity + ((this.gravity < 0) ? this.velocity * 1.5 : this.velocity); // Add to Gravity Pull Effect
     }
 
     this.gamePiece.newPos();
