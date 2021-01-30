@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://bloxii.web.app'
+  apiUrl: 'https://bloxii.herokuapp.com'
 };

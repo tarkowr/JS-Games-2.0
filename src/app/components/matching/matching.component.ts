@@ -12,7 +12,7 @@ export class MatchingComponent implements OnInit {
 
   moves: number = 0;
   cardsRemaining: number;
-  cardNames: string[] = ['amazon', 'android', 'apple', 'facebook-square', 'github', 'instagram', 'linkedin-square', 'snapchat', 'windows', 'youtube'];
+  cardNames: string[] = ['amazon', 'android', 'apple', 'facebook-square', 'instagram', 'reddit', 'snapchat', 'twitter-square', 'windows', 'youtube'];
   private cards: Element[] = [];
   private modal: HTMLElement;
   private openedCards: Element[] = [];

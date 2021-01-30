@@ -9,11 +9,19 @@
             </div>
 
             <div *ngIf="!user && !fetchingUser">
+                <div class="alert alert-primary" role="alert">
+                    Get Started with Bloxxi!
+                  </div>
                 <app-signup></app-signup>
             </div>
 
-            <div *ngIf="user">
-                {{ user.username }}
+            <div *ngIf="user" class="w-100">
+                <div class="profile-avatar text-center m-auto pt-1" [style.background]="user.color ? user.color : '#ff2626'">
+                    {{ user.username[0] | uppercase }}
+                </div>
+                <div class="mt-2 h5">
+                    {{ user.username }}
+                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from './services/user.service';
+import { GameService } from './services/game.service';
 import { StorageService } from './services/storage.service';
 import { WindowService } from './services/window.service';
 import { storage } from './app.constants';
@@ -14,15 +15,10 @@ export class AppComponent {
 
   constructor(private windowService: WindowService,
     private storageService: StorageService,
+    private gameService: GameService,
     private userService: UserService) { }
 
-  async ngOnInit() {
-    this.windowService.checkBreakpoints();
-    
-    window.addEventListener('resize', () => {
-      this.windowService.checkBreakpoints();
-    });
-
+  private async fetchUser() {
     const id = this.storageService.get(storage.userId);
 
     if (id) {
@@ -36,5 +32,16 @@ export class AppComponent {
     }
 
     this.userService.user = {};
+  }
+
+  async ngOnInit() {
+    this.windowService.checkBreakpoints();
+    
+    window.addEventListener('resize', () => {
+      this.windowService.checkBreakpoints();
+    });
+
+    this.fetchUser();
+    this.gameService.fetchLeaderboard();
   }
 }

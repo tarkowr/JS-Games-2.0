@@ -33,7 +33,7 @@ export class UserService {
     }
 
     // Save new user
-    add(username: string) : Promise<any> {
-        return this.http.post(`${environment.apiUrl}/api/user`, { username: username }).toPromise();
+    add(username: string, color: string) : Promise<any> {
+        return this.http.post(`${environment.apiUrl}/api/user`, { username: username, color: color }).toPromise();
     }
 }

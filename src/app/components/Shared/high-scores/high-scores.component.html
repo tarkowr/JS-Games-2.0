@@ -2,8 +2,13 @@
     <div class="col-12 h4 text-center p-3">{{ label }}</div>
     <div class="col-12 col-md-6 col-lg-4 mb-3" *ngFor="let game of games">
         <div class="mx-2">
-            <div class="h5 f4 px-2">
-                {{ game.name }}
+            <div class="row">
+                <div class="col-7 h5 f4">
+                    <div class="pl-2">{{ game.name }}</div>
+                </div>
+                <div class="col-5 text-right">
+                    <div class="refresh-btn btn btn-info mb-2 py-1 mr-2" (click)="fetchLeaderboard()">Refresh</div>
+                </div>
             </div>
 
             <table *ngIf="game.highScores; else no_high_scores" class="table table-hover border-bottom">

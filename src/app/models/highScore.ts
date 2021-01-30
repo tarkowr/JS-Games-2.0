@@ -1,5 +1,6 @@
 export interface HighScore {
     userId: string;
+    username: string;
     date: TimeStamp;
     score: number;
 }

@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Leaderboard } from 'src/app/models/leaderboard';
 import { GameService } from '../../../services/game.service';
 
 @Component({
@@ -12,31 +14,45 @@ export class HighScoresComponent implements OnInit {
   @Input() count: number;
 
   games: any[];
+  
+  private leaderboardSubscription: Subscription;
+  private canFetchLeaderboard: boolean = true;
 
   constructor(private gameService: GameService) { }
 
-  // OnInit: Retrieve scores from database
-  private async fetchGameScores() {
-    let matchingScores : Array<any> = await this.gameService.getMatching()
-      .catch(() => null);
-    
-    let flappyScores : Array<any> = await this.gameService.getFlappy()
-      .catch(() => null);
+  fetchLeaderboard() {
+    if (!this.canFetchLeaderboard) return;
 
-    this.games = [
-      {
-        name: 'Matching',
-        highScores: matchingScores.slice(0, this.count),
-      },
-      {
-        name: 'Flappy',
-        highScores: flappyScores.slice(0, this.count),
-      },
-    ];
+    this.gameService.fetchLeaderboard();
+    this.games = null;
+    this.canFetchLeaderboard = false;
+    
+    setTimeout(() => {
+      this.canFetchLeaderboard = true;
+    }, 10000);
+  }
+
+  private getLeaderboard() {
+    this.leaderboardSubscription = this.gameService.leaderboard.subscribe((lboard: Leaderboard) => {
+      this.games = [
+        {
+          name: 'Matching',
+          highScores: lboard.matching ? lboard.matching.slice(0, this.count) : null,
+        },
+        {
+          name: 'Flappy',
+          highScores: lboard.flappy ? lboard.flappy.slice(0, this.count) : null,
+        },
+      ];
+    });
+  }
+
+  ngOnDestroy() {
+    this.leaderboardSubscription.unsubscribe();
   }
 
   ngOnInit() {
-    this.fetchGameScores();
+    this.getLeaderboard();
   }
 
 }

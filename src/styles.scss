@@ -91,10 +91,12 @@ label{
     min-height: 100vh !important;
 }
 
-.card-box-shadow {
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
 a {
     color: black;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
 }

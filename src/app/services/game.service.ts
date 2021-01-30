@@ -1,12 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { ReplaySubject } from 'rxjs';
+import { HighScore } from '../models/highScore';
+import { Leaderboard } from '../models/leaderboard';
 
 @Injectable({
     providedIn: 'root'
 })
 export class GameService {
-    constructor(private http: HttpClient) { }
+    private _leaderboard: ReplaySubject<any>;
+
+    constructor(private http: HttpClient) { 
+        this._leaderboard = new ReplaySubject<any>(1);
+    }
+
+    get leaderboard() : any {
+        return this._leaderboard.asObservable();
+    }
+
+    set leaderboard(user: any) {
+        this._leaderboard.next(user);
+    }
 
     // Fetch matching scores
     getMatching() : Promise<any> {
@@ -26,5 +41,21 @@ export class GameService {
     // Save flappy score
     saveFlappy(userId: string, score: number) : Promise<any> {
         return this.http.post(`${environment.apiUrl}/api/flappy`, { userId: userId, score: score }).toPromise();
+    }
+
+    // Fetch scores and cache results
+    async fetchLeaderboard() {
+        let matchingScores : Array<HighScore> = await this.getMatching()
+        .catch(() => null);
+    
+      let flappyScores : Array<HighScore> = await this.getFlappy()
+        .catch(() => null);
+  
+      let leaderboard: Leaderboard = {
+        flappy: flappyScores,
+        matching: matchingScores,
+      };
+  
+      this.leaderboard = leaderboard;
     }
 }

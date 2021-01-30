@@ -4,6 +4,7 @@ import { StorageService } from '../../../services/storage.service';
 import { UserService } from '../../../services/user.service';
 import { storage } from '../../../app.constants';
 import { User } from '../../../models/user';
+import { app } from '../../../app.constants';
 
 @Component({
   selector: 'app-signup',
@@ -29,7 +30,9 @@ export class SignupComponent implements OnInit {
 
     this.loading = true;
 
-    await this.userService.add(this.f.username.value)
+    let randColor = app.colors[Math.floor(Math.random() * app.colors.length)];
+
+    await this.userService.add(this.f.username.value, randColor)
       .then((newUser: User) => {
         this.storageService.set(storage.userId, newUser.id);
         this.userService.user = newUser;
