@@ -19,12 +19,13 @@ export class FlappyComponent implements OnInit {
   gameEnd: boolean = false;
   beforeGame: boolean = true;
   score: number = 0;
+  private modal: HTMLElement;
 
   private updateGameInterval: number = 10;
   private addObstacleInterval: number = 100;
 
   private gravity: number = 0;
-  private velocity: number = 0.08;
+  private velocity: number = 0.12;
 
   private mobile: Boolean = true;
   private windowSubscription: Subscription;
@@ -48,6 +49,7 @@ export class FlappyComponent implements OnInit {
     private storageService: StorageService) {}
 
   setupGameArea() {
+    this.modal = document.getElementById('end-modal');  
     this.createGameArea(this.updateGameArea.bind(this), this.updateGameInterval);
     this.gamePiece = this.component(45, 45, '#FF247F', 75, 180);
     this.gameArea.setup();
@@ -55,12 +57,17 @@ export class FlappyComponent implements OnInit {
     this.updateGameArea();
   }
 
+  closeModal(){
+    this.modal.style.display = 'none';
+  }
+
   startGame() {
     this.beforeGame = false;
     this.gameArea.start();
   }
 
-  restartGame() {
+  restart() {
+    this.modal.style.display = 'none';
     this.beforeGame = true;
     this.obstacles = [];
     this.passedObstacles = [];
@@ -167,6 +174,7 @@ export class FlappyComponent implements OnInit {
     if (this.hasCrashed()) {
       this.gameArea.stop();
       this.saveScore();
+      setTimeout(() => this.modal.style.display = 'block', 350);
       return;
     }
 
@@ -253,7 +261,7 @@ export class FlappyComponent implements OnInit {
     this.gamePiece.speedY = 0;
 
     if (this.clicked) {
-      this.gravity = -3.5;
+      this.gravity = -4;
       this.gamePiece.speedY = this.gravity;
       this.clicked = false;
     } else {

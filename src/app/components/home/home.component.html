@@ -1,17 +1,6 @@
 <div class="container">
-  <div class="home-card card mb-3 px-3">
-    <div class="d-flex align-items-end h-100">
-      <div class="play-btn btn-block btn btn-light text-left mb-4 py-2 px-4 border border-light" routerLink="/games">
-        <div class="row">
-          <div class="col-10 text-gray">Let the games begin</div>
-          <div class="col-2 text-right mx-0"><i class="fa fa-angle-right"></i></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row justify-content-center text-center px-3">
-    <div class="card p-3 col-12 col-lg-5">
+  <div class="row justify-content-center text-center pb-3">
+    <div class="col-12 col-lg-5">
       <div *ngIf="user">
         <div class="alert alert-success" role="alert">
           Signed In!
@@ -32,7 +21,7 @@
     </div>
   </div>
 
-  <div class="card my-3">
+  <div class="card my-3" *ngIf="hasLeaderboard">
     <app-high-scores label="Leaderboards" count="3"></app-high-scores>
   </div>
 

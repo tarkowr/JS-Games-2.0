@@ -56,7 +56,7 @@ export class MatchingComponent implements OnInit {
       this.moves = 0;
       this.openedCards = [];
       this.cardsRemaining = this.cards.length;
-      this.modal = document.getElementById('modal');  
+      this.modal = document.getElementById('end-modal');  
 
       this.forEachCard((card: Element) => card.classList.remove('match'));
     }, 500);

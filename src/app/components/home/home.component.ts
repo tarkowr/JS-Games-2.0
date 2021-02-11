@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/models/user';
+import { GameService } from 'src/app/services/game.service';
 
 @Component({
   selector: 'app-home',
@@ -12,11 +13,14 @@ export class HomeComponent implements OnInit {
 
   user: any;
   fetchingUser: boolean = true;
+  hasLeaderboard: boolean = false;
 
   private userSubscription: Subscription;
+  private leaderboardSubscription: Subscription;
 
   constructor(
-    private userService: UserService) { 
+    private userService: UserService,
+    private gameService: GameService) { 
   }
 
   // OnInit: Get user data
@@ -30,11 +34,20 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  // OnInit: Determine whether leaderboard data is available
+  private getLeaderboard() {
+    this.leaderboardSubscription = this.gameService.leaderboard.subscribe((_) => {
+      this.hasLeaderboard = true;
+    });
+  }
+
   ngOnInit() {
     this.getUser();
+    this.getLeaderboard();
   }
 
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
+    this.leaderboardSubscription.unsubscribe();
   }
 }
