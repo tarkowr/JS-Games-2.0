@@ -174,7 +174,7 @@ export class FlappyComponent implements OnInit {
     if (this.hasCrashed()) {
       this.gameArea.stop();
       this.saveScore();
-      setTimeout(() => this.modal.style.display = 'block', 350);
+      setTimeout(() => this.modal.style.display = 'block', 300);
       return;
     }
 
