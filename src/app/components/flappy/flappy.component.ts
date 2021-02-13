@@ -22,7 +22,7 @@ export class FlappyComponent implements OnInit {
   private modal: HTMLElement;
 
   private updateGameInterval: number = 10;
-  private addObstacleInterval: number = 100;
+  private addObstacleInterval: number = 150;
 
   private gravity: number = 0;
   private velocity: number = 0.12;
@@ -37,7 +37,7 @@ export class FlappyComponent implements OnInit {
 
   private barGap: number = 160;
   private barGapRange: number = 30; // Larger number will create smaller spread
-  private barMovementSpeed: number = -3;
+  private barMovementSpeed: number = -2;
 
   private barMinHeight: number = this.barGapRange;
   private get barMaxHeight(): number {

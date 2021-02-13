@@ -1,5 +1,5 @@
 <div class="text-center">
-    <div id="game-board">
+    <div id="game-board" class="not-selectable">
         <canvas id="board" class="d-none border bg-white" (click)="canvasClicked($event)"></canvas>
     </div>
 
@@ -8,13 +8,13 @@
         <div *ngIf="beforeGame">Tap the screen to begin</div>
     </div>
 
-    <div *ngIf="gameEnd" class="my-2 px-2">
+    <div *ngIf="gameEnd" class="restart-wrapper mx-auto my-2 px-2">
         <button id="restart" class="btn btn-primary btn-block py-3" (click)="restart()">Restart</button>
     </div>
 
     <div class="py-2"></div>
 
-    <section id="end-modal" class="modal-bg w-100 h-100">
+    <section id="end-modal" class="modal-bg w-100 h-100 not-selectable">
       <div class="modal-box bg-white text-center py-5 px-1 rounded">
         <div class="modal-heading p-2 h3">
           <span class="animation-icon">🎉</span>
